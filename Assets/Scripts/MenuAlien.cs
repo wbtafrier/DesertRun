@@ -12,7 +12,7 @@ public class MenuAlien : MenuElement
     float currRotation = 0f;
     float moveTimer = 0f;
     readonly float moveTimerMax = 0.2f;
-    readonly float popSpeed = 5f;
+    readonly float popSpeed = 600f;
     float maxPopTravelDist = 50f;
     float popTravelDist = 0f;
     float currMovement = 0f;
@@ -50,8 +50,8 @@ public class MenuAlien : MenuElement
             {
                 moveTimer = 0f;
 
-                currMovement = Random.Range(7.5f, 10f);
-                currDir = SwitchDirections();
+                currMovement = Random.Range(1500f, 2000f) * Time.deltaTime;
+                currDir = SwitchDirections(); 
                 transform.position = new Vector3(
                     currDir.Contains("left") ? centerPos.x - currMovement : (currDir.Contains("right") ? centerPos.x + currMovement : centerPos.x),
                     currDir.Contains("up") ? centerPos.y + currMovement : (currDir.Contains("down") ? centerPos.y - currMovement : centerPos.y),
@@ -80,6 +80,7 @@ public class MenuAlien : MenuElement
         }
         else
         {
+            float speed = popSpeed * Time.deltaTime;
             if (popPos.z == -1)
             {
                 maxPopTravelDist = Random.Range(200f, 250f);
@@ -93,10 +94,10 @@ public class MenuAlien : MenuElement
 
             if (!finishingPop && popTravelDist <= maxPopTravelDist)
             {
-                popTravelDist += popSpeed;
+                popTravelDist += speed;
                 transform.Translate(
-                        currDir.Contains("left") ? -popSpeed : (currDir.Contains("right") ? popSpeed : 0),
-                        currDir.Contains("up") ? popSpeed : (currDir.Contains("down") ? -popSpeed : 0),
+                        currDir.Contains("left") ? -speed : (currDir.Contains("right") ? speed : 0),
+                        currDir.Contains("up") ? speed : (currDir.Contains("down") ? -speed : 0),
                         0);
             }
             else if (!finishingPop && popTravelDist > maxPopTravelDist)
@@ -107,10 +108,10 @@ public class MenuAlien : MenuElement
 
             if (finishingPop && popTravelDist <= maxPopTravelDist)
             {
-                popTravelDist += popSpeed;
+                popTravelDist += speed;
                 transform.Translate(
-                        currDir.Contains("left") ? popSpeed : (currDir.Contains("right") ? -popSpeed : 0),
-                        currDir.Contains("up") ? -popSpeed : (currDir.Contains("down") ? popSpeed : 0),
+                        currDir.Contains("left") ? speed : (currDir.Contains("right") ? -speed : 0),
+                        currDir.Contains("up") ? -speed : (currDir.Contains("down") ? speed : 0),
                         0);
             }
             else if (finishingPop && popTravelDist > maxPopTravelDist)

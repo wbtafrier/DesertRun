@@ -29,10 +29,10 @@ public class MenuController : MonoBehaviour
         //every balloon is 150pts
         //sand particles
         transitioning = true;
-        sign.GetComponent<MenuElement>().BeginExit(2f, false, true, false);
-        alien1.GetComponent<MenuElement>().BeginExit(3f, false, true, false);
-        alien2.GetComponent<MenuElement>().BeginExit(3f, true, false, false);
-        cactus.GetComponent<MenuElement>().BeginExit(-2.5f, false, true, false);
+        sign.GetComponent<MenuElement>().BeginExit(150f, false, true, false);
+        alien1.GetComponent<MenuElement>().BeginExit(225f, false, true, false);
+        alien2.GetComponent<MenuElement>().BeginExit(225f, true, false, false);
+        cactus.GetComponent<MenuElement>().BeginExit(-185f, false, true, false);
     }
 
     public void ElementReady(MenuElement e)

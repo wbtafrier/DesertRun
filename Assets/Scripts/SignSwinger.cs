@@ -7,8 +7,8 @@ public class SignSwinger : MenuElement
     float maxX = 0f, minX = 0f;
     float initX = 0f;
     float currX = 0f;
-    float deltaX = 0.05f;
-    float maxShift = 5f;
+    readonly float deltaX = 8f;
+    readonly float maxShift = 5f;
     bool shiftLeft = true;
 
     void Start()
@@ -23,6 +23,7 @@ public class SignSwinger : MenuElement
     public override void Update()
     {
         base.Update();
+        float actualDelta = deltaX * Time.deltaTime;
 
         if (exiting || stopped)
         {
@@ -40,13 +41,13 @@ public class SignSwinger : MenuElement
 
         if (shiftLeft)
         {
-            currX -= deltaX;
+            currX -= actualDelta;
         }
         else
         {
-            currX += deltaX;
+            currX += actualDelta;
         }
         
-        transform.Translate((shiftLeft ? -deltaX : deltaX), 0, 0, Space.World);
+        transform.Translate((shiftLeft ? -actualDelta : actualDelta), 0, 0, Space.World);
     }
 }
