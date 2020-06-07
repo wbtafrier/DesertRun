@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SignSwinger : MenuElement
 {
@@ -11,9 +9,11 @@ public class SignSwinger : MenuElement
     readonly float maxShift = 5f;
     bool shiftLeft = true;
 
-    void Start()
+    public override void Start()
     {
-        initX = gameObject.transform.position.x;
+        base.Start();
+
+        initX = rectTransform.anchoredPosition.x;
         currX = initX;
         maxX = initX + maxShift;
         minX = initX - maxShift;
@@ -48,6 +48,6 @@ public class SignSwinger : MenuElement
             currX += actualDelta;
         }
         
-        transform.Translate((shiftLeft ? -actualDelta : actualDelta), 0, 0, Space.World);
+        rectTransform.Translate((shiftLeft ? -actualDelta : actualDelta), 0, 0);
     }
 }

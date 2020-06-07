@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MenuAlien : MenuElement
 {
-    Vector3 centerPos;
-    Vector3 popPos = new Vector3(0, 0, -1);
-    Vector3 prePopPos;
+    Vector2 centerPos;
+    Vector2 popPos = new Vector2(0, 0);
+    Vector2 prePopPos;
     List<string> popDirection;
     readonly float maxRotation = 20f;
     float currRotation = 0f;
@@ -19,6 +18,7 @@ public class MenuAlien : MenuElement
     int currDirIndex = 0;
     [SerializeField] float deltaRotation = 0.1f;
     bool tiltLeft = true;
+    bool popStarted = false;
     bool popping = false;
     bool finishingPop = false;
     List<List<string>> directionList = new List<List<string>>() {
@@ -27,10 +27,12 @@ public class MenuAlien : MenuElement
     };
     List<string> currDir = new List<string>();
 
-    void Start()
+    public override void Start()
     {
-        centerPos = transform.position;
-        currRotation = transform.rotation.z;
+        base.Start();
+
+        centerPos = rectTransform.anchoredPosition;
+        currRotation = rectTransform.rotation.z;
     }
 
     // Update is called once per frame
@@ -52,10 +54,9 @@ public class MenuAlien : MenuElement
 
                 currMovement = Random.Range(1500f, 2000f) * Time.deltaTime;
                 currDir = SwitchDirections(); 
-                transform.position = new Vector3(
+                rectTransform.anchoredPosition = new Vector2(
                     currDir.Contains("left") ? centerPos.x - currMovement : (currDir.Contains("right") ? centerPos.x + currMovement : centerPos.x),
-                    currDir.Contains("up") ? centerPos.y + currMovement : (currDir.Contains("down") ? centerPos.y - currMovement : centerPos.y),
-                    centerPos.z);
+                    currDir.Contains("up") ? centerPos.y + currMovement : (currDir.Contains("down") ? centerPos.y - currMovement : centerPos.y));
             }
 
             if (currRotation <= -maxRotation)
@@ -76,26 +77,26 @@ public class MenuAlien : MenuElement
                 currRotation -= deltaRotation;
             }
 
-            transform.Rotate(0, 0, tiltLeft ? deltaRotation : -deltaRotation, Space.Self);
+            rectTransform.Rotate(0, 0, tiltLeft ? deltaRotation : -deltaRotation, Space.Self);
         }
         else
         {
             float speed = popSpeed * Time.deltaTime;
-            if (popPos.z == -1)
+            if (!popStarted)
             {
                 maxPopTravelDist = Random.Range(200f, 250f);
                 popDirection = directionList[Random.Range(0, directionList.Count - 1)];
-                popPos = new Vector3(
+                popPos = new Vector2(
                     currDir.Contains("left") ? centerPos.x - maxPopTravelDist : (currDir.Contains("right") ? centerPos.x + maxPopTravelDist : centerPos.x),
-                    currDir.Contains("up") ? centerPos.y + maxPopTravelDist : (currDir.Contains("down") ? centerPos.y - maxPopTravelDist : centerPos.y),
-                    centerPos.z);
-                prePopPos = transform.position;
+                    currDir.Contains("up") ? centerPos.y + maxPopTravelDist : (currDir.Contains("down") ? centerPos.y - maxPopTravelDist : centerPos.y));
+                popStarted = true;
+                prePopPos = rectTransform.anchoredPosition;
             }
 
             if (!finishingPop && popTravelDist <= maxPopTravelDist)
             {
                 popTravelDist += speed;
-                transform.Translate(
+                rectTransform.Translate(
                         currDir.Contains("left") ? -speed : (currDir.Contains("right") ? speed : 0),
                         currDir.Contains("up") ? speed : (currDir.Contains("down") ? -speed : 0),
                         0);
@@ -109,22 +110,23 @@ public class MenuAlien : MenuElement
             if (finishingPop && popTravelDist <= maxPopTravelDist)
             {
                 popTravelDist += speed;
-                transform.Translate(
+                rectTransform.Translate(
                         currDir.Contains("left") ? speed : (currDir.Contains("right") ? -speed : 0),
                         currDir.Contains("up") ? -speed : (currDir.Contains("down") ? speed : 0),
                         0);
             }
             else if (finishingPop && popTravelDist > maxPopTravelDist)
             {
-                if (!transform.position.Equals(prePopPos))
+                if (!rectTransform.anchoredPosition.Equals(prePopPos))
                 {
-                    transform.position = prePopPos;
+                    rectTransform.anchoredPosition = prePopPos;
                 }
                 moveTimer = 0f;
                 popTravelDist = 0f;
                 finishingPop = false;
                 popping = false;
-                popPos = new Vector3(0, 0, -1);
+                popStarted = false;
+                popPos = new Vector2(0, 0);
             }
 
         }
