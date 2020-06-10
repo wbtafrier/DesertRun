@@ -1,14 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MenuElement : MonoBehaviour
 {
+    protected RectTransform rectTransform;
     protected bool exiting = false;
     protected bool stopped = false;
     private float exitSpeed = 1f;
     private float exitTimer = 0f;
     private Vector3 exitVec;
+
+    public virtual void Start()
+    {
+        rectTransform = GetComponent<RectTransform>();
+    }
 
     public virtual void Update()
     {
@@ -17,7 +21,7 @@ public class MenuElement : MonoBehaviour
             if (exitTimer < 3f)
             {
                 exitTimer += Time.deltaTime;
-                transform.Translate(exitVec);
+                rectTransform.Translate(exitVec);
             }
             else if (!stopped)
             {
@@ -38,7 +42,7 @@ public class MenuElement : MonoBehaviour
     public virtual void BeginExit(float speed, bool x, bool y, bool z)
     {
         exiting = true;
-        this.exitSpeed = speed * Time.deltaTime;
+        exitSpeed = speed * Time.deltaTime;
         exitVec = new Vector3(x ? exitSpeed : 0, y ? exitSpeed : 0, z ? exitSpeed : 0);
     }
 }
