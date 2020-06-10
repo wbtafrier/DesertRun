@@ -42,7 +42,7 @@ public class MenuElement : MonoBehaviour
     public virtual void BeginExit(float speed, bool x, bool y, bool z)
     {
         exiting = true;
-        this.exitSpeed = speed * Time.deltaTime;
+        exitSpeed = speed * Time.deltaTime;
         exitVec = new Vector3(x ? exitSpeed : 0, y ? exitSpeed : 0, z ? exitSpeed : 0);
     }
 }

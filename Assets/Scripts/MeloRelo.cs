@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.Presets;
 using UnityEngine;
 
 public class MeloRelo : MonoBehaviour
 {
+    private SpriteRenderer spriteRenderer;
+    private PolygonCollider2D polygonCollider;
+
     private int currSpriteIndex = 0;
     private float spriteChangeTimer = 0f;
     private float secondsBtwnSpriteChange = 0.05f;
@@ -12,6 +17,7 @@ public class MeloRelo : MonoBehaviour
     private float enteringFrameDuration = 0.005f;
 
     private bool jumping = false;
+    private bool firstJump = false;
     private float jumpVelocity = 0.1f;
     private float jumpTimer = 0f;
     private float jumpDuration = 0.5f;
@@ -19,16 +25,29 @@ public class MeloRelo : MonoBehaviour
     private float initHeight = 0f;
 
     static List<Sprite> spriteList = new List<Sprite>();
+    static List<PolygonCollider2D> colliderList = new List<PolygonCollider2D>();
 
     // Start is called before the first frame update
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        polygonCollider = GetComponent<PolygonCollider2D>();
+
         if (spriteList.Count == 0)
         {
             spriteList = new List<Sprite>(Resources.LoadAll<Sprite>("Sprites/relo/"));
         }
-        Debug.Log(spriteList.Count);
-        GetComponent<SpriteRenderer>().sprite = spriteList[currSpriteIndex];
+        spriteRenderer.sprite = spriteList[currSpriteIndex];
+
+        if (colliderList.Count == 0)
+        {
+            colliderList = new List<PolygonCollider2D>(GetComponents<PolygonCollider2D>());
+        }
+
+        foreach (PolygonCollider2D col in colliderList)
+        {
+            col.enabled = false;
+        }
         enteringFrame = true;
     }
 
@@ -70,6 +89,20 @@ public class MeloRelo : MonoBehaviour
             if (jumping)
             {
                 float currHeight = transform.position.y;
+                
+                if (firstJump)
+                {
+                    for (int i = 0; i < colliderList.Count; i++)
+                    {
+                        PolygonCollider2D col = colliderList[i];
+                        if (i != currSpriteIndex && col.enabled)
+                        {
+                            col.enabled = false;
+                        }
+                    }
+                    firstJump = false;
+                }
+
                 if (currHeight >= jumpHeight && jumpVelocity > 0f)
                 {
                     jumpTimer += Time.deltaTime;
@@ -99,6 +132,8 @@ public class MeloRelo : MonoBehaviour
                 }
             }
         }
+
+        UpdateCollider();
     }
 
     void Jump()
@@ -107,7 +142,10 @@ public class MeloRelo : MonoBehaviour
         {
             initHeight = transform.position.y;
             jumping = true;
-            GetComponent<SpriteRenderer>().sprite = spriteList[0];
+            firstJump = true;
+            colliderList[currSpriteIndex].enabled = false;
+            currSpriteIndex = 0;
+            spriteRenderer.sprite = spriteList[currSpriteIndex];
         }
     }
 
@@ -125,7 +163,28 @@ public class MeloRelo : MonoBehaviour
             {
                 currSpriteIndex++;
             }
-            GetComponent<SpriteRenderer>().sprite = spriteList[currSpriteIndex];
+            spriteRenderer.sprite = spriteList[currSpriteIndex];
         }
+    }
+
+    public void UpdateCollider()
+    {
+        GetLastCollider().enabled = false;
+        GetCurrentCollider().enabled = true;
+    }
+
+    private PolygonCollider2D GetLastCollider()
+    {
+        if (currSpriteIndex == 0)
+        {
+            return colliderList[colliderList.Count - 1];
+        }
+
+        return colliderList[currSpriteIndex - 1];
+    }
+
+    private PolygonCollider2D GetCurrentCollider()
+    {
+        return colliderList[currSpriteIndex];
     }
 }

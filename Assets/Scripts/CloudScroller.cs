@@ -1,24 +1,64 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class CloudScroller : MonoBehaviour
+public class CloudScroller : MenuElement
 {
-    RectTransform rect;
+    int sceneIndex;
+    Vector3 pos;
+    public static Vector3 cloud1Pos, cloud2Pos;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        rect = GetComponent<RectTransform>();
+        sceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (sceneIndex == 0)
+        {
+            base.Start();
+            pos = rectTransform.anchoredPosition;
+        }
+        else
+        {
+            pos = transform.position;
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        Debug.Log(rect.anchoredPosition);
-        if (rect.anchoredPosition.x <= -625)
+        if (sceneIndex == 0)
         {
-            rect.anchoredPosition = new Vector2(975, rect.anchoredPosition.y);
-        }
+            base.Update();
+            if (!exiting && !stopped)
+            {
+                if (pos.x <= -625)
+                {
+                    rectTransform.anchoredPosition = new Vector2(975, pos.y);
+                }
 
-        rect.Translate(-25 * Time.deltaTime, 0, 0);
+                rectTransform.Translate(-25 * Time.deltaTime, 0, 0);
+            }
+            pos = rectTransform.anchoredPosition;
+        }
+        else
+        {
+            if (pos.x <= -14.3833f)
+            {
+                transform.position = new Vector3(20.6167f, pos.y, pos.z);
+            }
+
+            transform.Translate(-0.7f * Time.deltaTime, 0, 0);
+            pos = transform.position;
+        }
+    }
+
+    public Vector3 GetPosition()
+    {
+        return pos;
+    }
+
+    public void SetPosition(Vector3 pos)
+    {
+        this.pos = pos;
     }
 }
