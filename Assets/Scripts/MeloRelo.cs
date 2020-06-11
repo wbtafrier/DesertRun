@@ -7,6 +7,7 @@ public class MeloRelo : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     private PolygonCollider2D polygonCollider;
+    private Rigidbody2D rigidbody;
 
     private int currSpriteIndex = 0;
     private float spriteChangeTimer = 0f;
@@ -20,9 +21,11 @@ public class MeloRelo : MonoBehaviour
     private bool firstJump = false;
     private float jumpVelocity = 0.1f;
     private float jumpTimer = 0f;
-    private float jumpDuration = 0.5f;
+    private float jumpDuration = 1f;
     private float jumpHeight = 1.8f;
     private float initHeight = 0f;
+
+    private bool dead = false;
 
     static List<Sprite> spriteList = new List<Sprite>();
     static List<PolygonCollider2D> colliderList = new List<PolygonCollider2D>();
@@ -32,6 +35,7 @@ public class MeloRelo : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         polygonCollider = GetComponent<PolygonCollider2D>();
+        rigidbody = GetComponent<Rigidbody2D>();
 
         if (spriteList.Count == 0)
         {
@@ -54,7 +58,7 @@ public class MeloRelo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!jumping)
+        if (!jumping && !dead)
         {
             Animate();
         }
@@ -75,6 +79,7 @@ public class MeloRelo : MonoBehaviour
                     {
                         transform.position = new Vector3(-6.5f, transform.position.y);
                     }
+                    rigidbody.gravityScale = 1f;
                     enteringFrame = false;
                 }
             }
@@ -86,10 +91,11 @@ public class MeloRelo : MonoBehaviour
                 Jump();
             }
 
-            if (jumping)
+            if (jumping && !dead)
             {
+
                 float currHeight = transform.position.y;
-                
+
                 if (firstJump)
                 {
                     for (int i = 0; i < colliderList.Count; i++)
@@ -103,33 +109,34 @@ public class MeloRelo : MonoBehaviour
                     firstJump = false;
                 }
 
-                if (currHeight >= jumpHeight && jumpVelocity > 0f)
-                {
-                    jumpTimer += Time.deltaTime;
-                    if (currHeight > jumpHeight)
-                    {
-                        transform.position = new Vector3(transform.position.x, jumpHeight);
-                    }
+                //if (currHeight >= jumpHeight && jumpVelocity > 0f)
+                //{
+                //    jumpTimer += Time.deltaTime;
+                //    if (currHeight > jumpHeight)
+                //    {
+                //        transform.position = new Vector3(transform.position.x, jumpHeight);
+                //    }
 
-                    if (jumpTimer >= jumpDuration)
-                    {
-                        jumpTimer = 0f;
-                        jumpVelocity = -jumpVelocity;
-                    }
-                }
-                else if (currHeight <= initHeight && jumpVelocity < 0f)
-                {
-                    jumpVelocity = -jumpVelocity;
-                    if (currHeight < initHeight)
-                    {
-                        transform.position = new Vector3(transform.position.x, initHeight);
-                    }
-                    jumping = false;
-                }
-                else
-                {
-                    transform.Translate(0, jumpVelocity, 0);
-                }
+                //    if (jumpTimer >= jumpDuration)
+                //    {
+                //        jumpTimer = 0f;
+                //        jumpVelocity = -jumpVelocity;
+                //    }
+                //}
+                //else if (currHeight <= -1.1 && jumpVelocity < 0f)
+                //{
+                //    jumpVelocity = -jumpVelocity;
+                //    if (currHeight < initHeight)
+                //    {
+                //        transform.position = new Vector3(transform.position.x, initHeight);
+                //    }
+
+                //    jumping = false;
+                //}
+                //else
+                //{
+                //    transform.Translate(0, jumpVelocity, 0);
+                //}
             }
         }
 
@@ -138,14 +145,15 @@ public class MeloRelo : MonoBehaviour
 
     void Jump()
     {
-        if (!jumping)
+        if (!jumping && !dead)
         {
-            initHeight = transform.position.y;
+            //initHeight = transform.position.y;
             jumping = true;
             firstJump = true;
             colliderList[currSpriteIndex].enabled = false;
             currSpriteIndex = 0;
             spriteRenderer.sprite = spriteList[currSpriteIndex];
+            rigidbody.AddForce(new Vector2(0f, 400f));
         }
     }
 
@@ -173,6 +181,16 @@ public class MeloRelo : MonoBehaviour
         GetCurrentCollider().enabled = true;
     }
 
+    public bool IsEnteringFrame()
+    {
+        return enteringFrame;
+    }
+
+    public void Die()
+    {
+        dead = true;
+    }
+
     private PolygonCollider2D GetLastCollider()
     {
         if (currSpriteIndex == 0)
@@ -186,5 +204,18 @@ public class MeloRelo : MonoBehaviour
     private PolygonCollider2D GetCurrentCollider()
     {
         return colliderList[currSpriteIndex];
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!collision.transform.Equals(GameController.GetSand().transform))
+        {
+            rigidbody.constraints = RigidbodyConstraints2D.None;
+            GameController.SetGameOver();
+        }
+        else if (jumping)
+        {
+            jumping = false;
+        }
     }
 }

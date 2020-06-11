@@ -16,10 +16,13 @@ public class MountainRange : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.x >= 17.5)
+        if (!GameController.IsGameOver())
         {
-            transform.position = START_POS;
+            if (transform.position.x >= 17.5)
+            {
+                transform.position = START_POS;
+            }
+            transform.Translate(VELOCITY * Time.deltaTime, 0, 0);
         }
-        transform.Translate(VELOCITY * Time.deltaTime, 0, 0);
     }
 }

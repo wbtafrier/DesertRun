@@ -5,13 +5,19 @@ public class GameController : MonoBehaviour
     //[SerializeField] GameObject clouds1 = default;
     //[SerializeField] GameObject clouds2 = default;
 
+    [SerializeField] GameObject sandObj = default;
+    [SerializeField] GameObject playerObj = default;
     [SerializeField] GameObject celestialBodyObj = default;
 
     static Camera mainCamera;
     static Color dayColor;
     static int daysSurvived = 1;
+    static bool isPlayerEntering = true;
     static bool isDaytime = true;
+    static bool isGameOver = false;
 
+    static GameObject sand;
+    static MeloRelo meloRelo;
     static CelestialBody celestialBody;
 
     // Start is called before the first frame update
@@ -19,6 +25,8 @@ public class GameController : MonoBehaviour
     {
         mainCamera = Camera.main;
         dayColor = mainCamera.backgroundColor;
+        sand = sandObj;
+        meloRelo = playerObj.GetComponent<MeloRelo>();
         celestialBody = celestialBodyObj.GetComponent<CelestialBody>();
 
         //Vector3 clouds1Pos = CloudScroller.cloud1Pos;
@@ -31,7 +39,14 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isPlayerEntering)
+        {
+            bool check = meloRelo.IsEnteringFrame();
+            if (isPlayerEntering != check)
+            {
+                isPlayerEntering = check;
+            }
+        }
     }
     
     public static void LightSwitch()
@@ -61,6 +76,11 @@ public class GameController : MonoBehaviour
         mainCamera.backgroundColor = dayColor;
     }
 
+    public static bool IsPlayerEnteringScene()
+    {
+        return isPlayerEntering;
+    }
+
     public static bool IsDay()
     {
         return isDaytime;
@@ -69,5 +89,22 @@ public class GameController : MonoBehaviour
     public static Camera GetMainCamera()
     {
         return mainCamera;
+    }
+
+    public static GameObject GetSand()
+    {
+        return sand;
+    }
+
+    public static void SetGameOver()
+    {
+        Debug.Log("GAME OVER");
+        isGameOver = true;
+        meloRelo.Die();
+    }
+
+    public static bool IsGameOver()
+    {
+        return isGameOver;
     }
 }
