@@ -8,9 +8,10 @@ public class CelestialBody : MonoBehaviour
     Sprite sunSprite;
     Sprite fullMoonSprite;
     Vector3 initPos;
-    readonly float INIT_SUNDOWN_VELOCITY = -0.5f;
-    readonly float VELOCITY = -0.1f;
-    bool sceneStart = true;
+    readonly float INIT_SUNDOWN_VELOCITY_Y = -0.5f;
+    readonly float VELOCITY_Y = -0.1f;
+    readonly float VELOCITY_X = -0.175f;
+    bool enterFrame = true;
 
     // Start is called before the first frame update
     void Start()
@@ -24,24 +25,25 @@ public class CelestialBody : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (sceneStart)
+        if (enterFrame)
         {
             if (transform.position.y <= 3.75f)
             {
-                sceneStart = false;
+                enterFrame = false;
             }
             else
             {
-                transform.Translate(0, INIT_SUNDOWN_VELOCITY * Time.deltaTime, 0);
+                transform.Translate(0, INIT_SUNDOWN_VELOCITY_Y * Time.deltaTime, 0);
             }
         }
         else if (transform.position.y <= -2.55)
         {
+            enterFrame = true;
             GameController.LightSwitch();
         }
         else
         {
-            transform.Translate(0, VELOCITY * Time.deltaTime, 0);
+            transform.Translate(VELOCITY_X * Time.deltaTime, VELOCITY_Y * Time.deltaTime, 0);
         }
     }
 

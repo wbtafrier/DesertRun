@@ -56,7 +56,7 @@ public class MeloRelo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!jumping && !dead)
+        if (/*!jumping && */!dead)
         {
             Animate();
         }
@@ -89,23 +89,23 @@ public class MeloRelo : MonoBehaviour
                 Jump();
             }
 
-            if (jumping && !dead)
-            {
+            //if (jumping && !dead)
+            //{
 
-                float currHeight = transform.position.y;
+            //    float currHeight = transform.position.y;
 
-                if (firstJump)
-                {
-                    for (int i = 0; i < colliderList.Count; i++)
-                    {
-                        PolygonCollider2D col = colliderList[i];
-                        if (i != currSpriteIndex && col.enabled)
-                        {
-                            col.enabled = false;
-                        }
-                    }
-                    firstJump = false;
-                }
+                //if (firstJump)
+                //{
+                //    for (int i = 0; i < colliderList.Count; i++)
+                //    {
+                //        PolygonCollider2D col = colliderList[i];
+                //        if (i != currSpriteIndex && col.enabled)
+                //        {
+                //            col.enabled = false;
+                //        }
+                //    }
+                //    firstJump = false;
+                //}
 
                 //if (currHeight >= jumpHeight && jumpVelocity > 0f)
                 //{
@@ -135,7 +135,7 @@ public class MeloRelo : MonoBehaviour
                 //{
                 //    transform.Translate(0, jumpVelocity, 0);
                 //}
-            }
+            //}
         }
 
         UpdateCollider();
@@ -147,11 +147,15 @@ public class MeloRelo : MonoBehaviour
         {
             //initHeight = transform.position.y;
             jumping = true;
-            firstJump = true;
-            colliderList[currSpriteIndex].enabled = false;
-            currSpriteIndex = 0;
-            spriteRenderer.sprite = spriteList[currSpriteIndex];
-            rigidbody.AddForce(new Vector2(0f, 400f));
+            //firstJump = true;
+            //colliderList[currSpriteIndex].enabled = false;
+            //currSpriteIndex = 0;
+            //spriteRenderer.sprite = spriteList[currSpriteIndex];
+            //rigidbody.AddForce(new Vector2(0f, 400f));
+            if (rigidbody.velocity.y < 1f)
+            {
+                rigidbody.velocity = new Vector2(0f, 8f);
+            }
         }
     }
 
