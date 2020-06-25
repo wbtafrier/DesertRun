@@ -1,17 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Cactus : MonoBehaviour
+public class DesertObject : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         if (!GameController.IsPlayerEnteringScene() && !GameController.IsGameOver() && transform.position.x >= -17.5)
         {

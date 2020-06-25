@@ -1,30 +1,39 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
     //[SerializeField] GameObject clouds1 = default;
     //[SerializeField] GameObject clouds2 = default;
 
+    [SerializeField] GameObject scoreObj = default;
     [SerializeField] GameObject sandObj = default;
     [SerializeField] GameObject playerObj = default;
     [SerializeField] GameObject celestialBodyObj = default;
+    [SerializeField] GameObject cactus1Obj = default;
+    [SerializeField] GameObject cactus2Obj = default;
 
     static Camera mainCamera;
     static Color dayColor;
     static int daysSurvived = 1;
+    static int score = 0;
     static bool isPlayerEntering = true;
     static bool isDaytime = true;
     static bool isGameOver = false;
 
+    static TextMeshPro scoreText;
     static GameObject sand;
     static MeloRelo meloRelo;
     static CelestialBody celestialBody;
+    static DesertObject cactus1;
+    static DesertObject cactus2;
 
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
         dayColor = mainCamera.backgroundColor;
+        scoreText = scoreObj.GetComponent<TextMeshPro>();
         sand = sandObj;
         meloRelo = playerObj.GetComponent<MeloRelo>();
         celestialBody = celestialBodyObj.GetComponent<CelestialBody>();
@@ -46,6 +55,11 @@ public class GameController : MonoBehaviour
             {
                 isPlayerEntering = check;
             }
+        }
+        else if (!IsGameOver())
+        {
+            score++;
+            scoreText.text = score.ToString();
         }
     }
     

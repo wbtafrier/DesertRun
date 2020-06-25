@@ -4,7 +4,6 @@ using UnityEngine;
 public class MeloRelo : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
-    private PolygonCollider2D polygonCollider;
     private Rigidbody2D rigidbody;
 
     private int currSpriteIndex = 0;
@@ -32,7 +31,6 @@ public class MeloRelo : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        polygonCollider = GetComponent<PolygonCollider2D>();
         rigidbody = GetComponent<Rigidbody2D>();
 
         if (spriteList.Count == 0)

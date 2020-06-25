@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MountainRange : MonoBehaviour
 {
-    readonly Vector3 START_POS = new Vector3(-17.5f, -0.25f);
-    readonly float VELOCITY = 0.1f;
+    readonly Vector3 START_POS = new Vector3(17.47f, -0.25f);
+    readonly float VELOCITY = -0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +18,7 @@ public class MountainRange : MonoBehaviour
     {
         if (!GameController.IsGameOver())
         {
-            if (transform.position.x >= 17.5)
+            if (transform.position.x <= -17.5)
             {
                 transform.position = START_POS;
             }
