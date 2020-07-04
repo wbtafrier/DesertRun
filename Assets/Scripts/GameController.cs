@@ -7,6 +7,9 @@ public class GameController : MonoBehaviour
     //[SerializeField] GameObject clouds2 = default;
 
     [SerializeField] GameObject scoreObj = default;
+    [SerializeField] GameObject scoreBgObj = default;
+    [SerializeField] GameObject gameOverObj = default;
+    [SerializeField] GameObject gameOverBgObj = default;
     [SerializeField] GameObject sandObj = default;
     [SerializeField] GameObject playerObj = default;
     [SerializeField] GameObject celestialBodyObj = default;
@@ -22,6 +25,9 @@ public class GameController : MonoBehaviour
     static bool isGameOver = false;
 
     static TextMeshPro scoreText;
+    static TextMeshPro scoreBgText;
+    static GameObject gameOver;
+    static GameObject gameOverBg;
     static GameObject sand;
     static MeloRelo meloRelo;
     static CelestialBody celestialBody;
@@ -34,9 +40,23 @@ public class GameController : MonoBehaviour
         mainCamera = Camera.main;
         dayColor = mainCamera.backgroundColor;
         scoreText = scoreObj.GetComponent<TextMeshPro>();
+        scoreBgText = scoreBgObj.GetComponent<TextMeshPro>();
+        //gameOverText = gameOverObj.GetComponent<TextMeshPro>();
+        gameOver = gameOverObj;
+        gameOverBg = gameOverBgObj;
         sand = sandObj;
         meloRelo = playerObj.GetComponent<MeloRelo>();
         celestialBody = celestialBodyObj.GetComponent<CelestialBody>();
+
+        if (gameOver.activeSelf)
+        {
+            gameOver.SetActive(false);
+        }
+
+        if (gameOverBg.activeSelf)
+        {
+            gameOverBg.SetActive(false);
+        }
 
         //Vector3 clouds1Pos = CloudScroller.cloud1Pos;
         //Vector3 clouds2Pos = CloudScroller.cloud2Pos;
@@ -58,8 +78,10 @@ public class GameController : MonoBehaviour
         }
         else if (!IsGameOver())
         {
+            string scoreStr = score.ToString();
             score++;
-            scoreText.text = score.ToString();
+            scoreBgText.text = scoreStr;
+            scoreText.text = scoreStr;
         }
     }
     
@@ -114,6 +136,8 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("GAME OVER");
         isGameOver = true;
+        gameOverBg.SetActive(true);
+        gameOver.SetActive(true);
         meloRelo.Die();
     }
 
