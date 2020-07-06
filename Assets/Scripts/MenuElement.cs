@@ -5,9 +5,13 @@ public class MenuElement : MonoBehaviour
     protected RectTransform rectTransform;
     protected bool exiting = false;
     protected bool stopped = false;
-    private float exitSpeed = 1f;
+    private float currExitSpeed = 1f;
     private float exitTimer = 0f;
     private Vector3 exitVec;
+
+    [SerializeField] float exitSpeed = default;
+    [SerializeField] bool xExit = default;
+    [SerializeField] bool yExit = default;
 
     public virtual void Start()
     {
@@ -18,7 +22,7 @@ public class MenuElement : MonoBehaviour
     {
         if (exiting)
         {
-            if (exitTimer < 3f)
+            if (exitTimer < 5f)
             {
                 exitTimer += Time.deltaTime;
                 rectTransform.Translate(exitVec);
@@ -26,7 +30,7 @@ public class MenuElement : MonoBehaviour
             else if (!stopped)
             {
                 Stop();
-                FindObjectOfType<MenuController>().ElementReady(this);
+                FindObjectOfType<MenuController>().ElementReady();
             }
         }
     }
@@ -39,10 +43,10 @@ public class MenuElement : MonoBehaviour
         stopped = true;
     }
 
-    public virtual void BeginExit(float speed, bool x, bool y, bool z)
+    public virtual void BeginExit()
     {
         exiting = true;
-        exitSpeed = speed * Time.deltaTime;
-        exitVec = new Vector3(x ? exitSpeed : 0, y ? exitSpeed : 0, z ? exitSpeed : 0);
+        currExitSpeed = exitSpeed * Time.deltaTime;
+        exitVec = new Vector3(xExit ? currExitSpeed : 0, yExit ? currExitSpeed : 0, 0);
     }
 }

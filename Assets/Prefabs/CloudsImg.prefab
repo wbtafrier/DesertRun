@@ -87,4 +87,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e22846aac29364bbac38e63f7e04db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myPrefab: {fileID: 8563127090595641220}
+  exitSpeed: -600
+  xExit: 1
+  yExit: 0
