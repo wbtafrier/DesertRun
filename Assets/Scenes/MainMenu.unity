@@ -127,18 +127,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1082635101968238953}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &191760899 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1082635102086857578, guid: 231180cfa3e316946b76da16620afb2f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1082635101968238953}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &229488728
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266b4c5fcd893084bbf1914baafdb154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitSpeed: -100
+  exitSpeed: -150
   xExit: 0
   yExit: 1
 --- !u!1001 &334096841
@@ -761,18 +749,6 @@ MonoBehaviour:
   exitSpeed: 50
   xExit: 0
   yExit: 1
---- !u!114 &1075117471 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 86759357525013719, guid: 8f377518f1ce05d469a71b4d66c790fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 7593536794582898400}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1075117468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1207248107
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,7 +891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266b4c5fcd893084bbf1914baafdb154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitSpeed: -50
+  exitSpeed: -75
   xExit: 1
   yExit: 1
 --- !u!1 &1215868571
@@ -1002,18 +978,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 334096841}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1810526080 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1082635102086857578, guid: 231180cfa3e316946b76da16620afb2f,
-    type: 3}
-  m_PrefabInstance: {fileID: 334096841}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1937051155
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,14 +1007,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 729d80dd414db0843a3b2c3389848538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sign: {fileID: 2086825450}
-  alien1: {fileID: 191760899}
-  alien2: {fileID: 1810526080}
-  cactus: {fileID: 229488730}
-  clouds1: {fileID: 2547144982940482309}
-  clouds2: {fileID: 2085300825}
-  sun: {fileID: 1075117471}
-  button: {fileID: 1207248109}
   elementList:
   - {fileID: 2086825452}
   - {fileID: 352276159}
@@ -1193,18 +1149,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b311dcc2b15f0142bfb92eb0ebcfa34, type: 3}
---- !u!114 &2085300825 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 657562380642639584, guid: 5b311dcc2b15f0142bfb92eb0ebcfa34,
-    type: 3}
-  m_PrefabInstance: {fileID: 2085300824}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2086825448
 GameObject:
   m_ObjectHideFlags: 0
@@ -1675,18 +1619,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2547144982940482307}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2547144982940482309 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 657562380642639584, guid: 5b311dcc2b15f0142bfb92eb0ebcfa34,
-    type: 3}
-  m_PrefabInstance: {fileID: 2547144982940482307}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &7593536794582898400
 PrefabInstance:
   m_ObjectHideFlags: 0
