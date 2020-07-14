@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MountainRange : GameElement
+public class GameCloud : GameElement
 {
-    readonly Vector3 START_POS = new Vector3(17.47f, -0.25f);
-    readonly float VELOCITY = -0.1f;
+    Vector3 pos;
 
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
+        pos = transform.position;
     }
 
     public override void Restart() { }
@@ -19,13 +19,15 @@ public class MountainRange : GameElement
     public override void Update()
     {
         base.Update();
-        if (!GameController.IsGameOver() && !GameController.IsRestarting())
+        if (!GameController.IsRestarting())
         {
-            if (transform.position.x <= -17.5)
+            if (pos.x <= -14.3833f)
             {
-                transform.position = START_POS;
+                transform.position = new Vector3(20.6167f, pos.y, pos.z);
             }
-            transform.Translate(VELOCITY * Time.deltaTime, 0, 0);
+
+            transform.Translate(-0.7f * Time.deltaTime, 0, 0);
+            pos = transform.position;
         }
     }
 }

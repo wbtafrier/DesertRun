@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MeloRelo : MonoBehaviour
+public class MeloRelo : GameElement
 {
     private SpriteRenderer spriteRenderer;
-    private Rigidbody2D rigidbody;
+    private Rigidbody2D rigidbodyComp;
 
     private int currSpriteIndex = 0;
     private float spriteChangeTimer = 0f;
@@ -28,10 +28,11 @@ public class MeloRelo : MonoBehaviour
     static List<PolygonCollider2D> colliderList = new List<PolygonCollider2D>();
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        base.Start();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        rigidbodyComp = GetComponent<Rigidbody2D>();
 
         if (spriteList.Count == 0)
         {
@@ -51,89 +52,63 @@ public class MeloRelo : MonoBehaviour
         enteringFrame = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Restart()
     {
-        if (/*!jumping && */!dead)
+        currSpriteIndex = 0;
+        foreach (PolygonCollider2D col in colliderList)
         {
-            Animate();
+            col.enabled = false;
         }
+        spriteRenderer.sprite = spriteList[currSpriteIndex];
+        colliderList[currSpriteIndex].enabled = true;
+        transform.localRotation = Quaternion.identity;
+        rigidbodyComp.constraints = RigidbodyConstraints2D.FreezeRotation;
+        enteringFrame = true;
+        dead = false;
+    }
 
-        if (enteringFrame)
+    // Update is called once per frame
+    public override void Update()
+    {
+        base.Update();
+        
+        if (!GameController.IsRestarting())
         {
-            enteringFrameTimer += Time.deltaTime;
-            if (enteringFrameTimer >= enteringFrameDuration)
+            if (!dead)
             {
-                enteringFrameTimer = 0f;
-                if (transform.position.x < -6.5)
+                Animate();
+            }
+
+            if (enteringFrame)
+            {
+                enteringFrameTimer += Time.deltaTime;
+                if (enteringFrameTimer >= enteringFrameDuration)
                 {
-                    transform.Translate(0.01f, 0, 0);
-                }
-                else
-                {
-                    if (transform.position.x > -6.5)
+                    enteringFrameTimer = 0f;
+                    if (rigidbodyComp.position.x < -6.5)
                     {
-                        transform.position = new Vector3(-6.5f, transform.position.y);
+                        rigidbodyComp.velocity = new Vector2(1.5f, 0f);
                     }
-                    rigidbody.gravityScale = 1f;
-                    enteringFrame = false;
+                    else
+                    {
+                        if (rigidbodyComp.position.x > -6.5)
+                        {
+                            rigidbodyComp.position = new Vector3(-6.5f, rigidbodyComp.position.y);
+                        }
+                        rigidbodyComp.velocity = new Vector2(0f, 0f);
+                        rigidbodyComp.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+                        rigidbodyComp.gravityScale = 1f;
+                        enteringFrame = false;
+                    }
                 }
             }
-        }
-        else
-        {
-            if (Input.GetButtonDown("Jump"))
+            else
             {
-                Jump();
+                if (Input.GetButtonDown("Jump"))
+                {
+                    Jump();
+                }
             }
-
-            //if (jumping && !dead)
-            //{
-
-            //    float currHeight = transform.position.y;
-
-                //if (firstJump)
-                //{
-                //    for (int i = 0; i < colliderList.Count; i++)
-                //    {
-                //        PolygonCollider2D col = colliderList[i];
-                //        if (i != currSpriteIndex && col.enabled)
-                //        {
-                //            col.enabled = false;
-                //        }
-                //    }
-                //    firstJump = false;
-                //}
-
-                //if (currHeight >= jumpHeight && jumpVelocity > 0f)
-                //{
-                //    jumpTimer += Time.deltaTime;
-                //    if (currHeight > jumpHeight)
-                //    {
-                //        transform.position = new Vector3(transform.position.x, jumpHeight);
-                //    }
-
-                //    if (jumpTimer >= jumpDuration)
-                //    {
-                //        jumpTimer = 0f;
-                //        jumpVelocity = -jumpVelocity;
-                //    }
-                //}
-                //else if (currHeight <= -1.1 && jumpVelocity < 0f)
-                //{
-                //    jumpVelocity = -jumpVelocity;
-                //    if (currHeight < initHeight)
-                //    {
-                //        transform.position = new Vector3(transform.position.x, initHeight);
-                //    }
-
-                //    jumping = false;
-                //}
-                //else
-                //{
-                //    transform.Translate(0, jumpVelocity, 0);
-                //}
-            //}
         }
 
         UpdateCollider();
@@ -143,16 +118,10 @@ public class MeloRelo : MonoBehaviour
     {
         if (!jumping && !dead)
         {
-            //initHeight = transform.position.y;
             jumping = true;
-            //firstJump = true;
-            //colliderList[currSpriteIndex].enabled = false;
-            //currSpriteIndex = 0;
-            //spriteRenderer.sprite = spriteList[currSpriteIndex];
-            //rigidbody.AddForce(new Vector2(0f, 400f));
-            if (rigidbody.velocity.y < 1f)
+            if (rigidbodyComp.position.y < 1f)
             {
-                rigidbody.velocity = new Vector2(0f, 8f);
+                rigidbodyComp.velocity = new Vector2(0f, 8f);
             }
         }
     }
@@ -189,6 +158,7 @@ public class MeloRelo : MonoBehaviour
     public void Die()
     {
         dead = true;
+        jumping = false;
     }
 
     private PolygonCollider2D GetLastCollider()
@@ -210,7 +180,7 @@ public class MeloRelo : MonoBehaviour
     {
         if (!collision.transform.Equals(GameController.GetSand().transform))
         {
-            rigidbody.constraints = RigidbodyConstraints2D.None;
+            rigidbodyComp.constraints = RigidbodyConstraints2D.None;
             GameController.SetGameOver();
         }
         else if (jumping)

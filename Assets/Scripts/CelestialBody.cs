@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CelestialBody : MonoBehaviour
+public class CelestialBody : GameElement
 {
     SpriteRenderer spriteRenderer;
     Sprite sunSprite;
@@ -14,36 +14,50 @@ public class CelestialBody : MonoBehaviour
     bool enterFrame = true;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        base.Start();
         spriteRenderer = GetComponent<SpriteRenderer>();
         sunSprite = spriteRenderer.sprite;
         fullMoonSprite = Resources.Load<Sprite>("Sprites/fullMoon");
         initPos = transform.position;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Restart()
     {
-        if (enterFrame)
+        if (spriteRenderer.sprite.Equals(fullMoonSprite))
         {
-            if (transform.position.y <= 3.75f)
+            ChangeToSun();
+        }
+        enterFrame = true;
+    }
+
+    // Update is called once per frame
+    public override void Update()
+    {
+        base.Update();
+        if (!GameController.IsRestarting())
+        {
+            if (enterFrame)
             {
-                enterFrame = false;
+                if (transform.position.y <= 3.75f)
+                {
+                    enterFrame = false;
+                }
+                else
+                {
+                    transform.Translate(0, INIT_SUNDOWN_VELOCITY_Y * Time.deltaTime, 0);
+                }
+            }
+            else if (transform.position.y <= -2.55)
+            {
+                enterFrame = true;
+                GameController.LightSwitch();
             }
             else
             {
-                transform.Translate(0, INIT_SUNDOWN_VELOCITY_Y * Time.deltaTime, 0);
+                transform.Translate(VELOCITY_X * Time.deltaTime, VELOCITY_Y * Time.deltaTime, 0);
             }
-        }
-        else if (transform.position.y <= -2.55)
-        {
-            enterFrame = true;
-            GameController.LightSwitch();
-        }
-        else
-        {
-            transform.Translate(VELOCITY_X * Time.deltaTime, VELOCITY_Y * Time.deltaTime, 0);
         }
     }
 

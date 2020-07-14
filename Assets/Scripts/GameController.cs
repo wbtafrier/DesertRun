@@ -10,24 +10,31 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject scoreBgObj = default;
     [SerializeField] GameObject gameOverObj = default;
     [SerializeField] GameObject gameOverBgObj = default;
+    [SerializeField] GameObject restartObj = default;
+    [SerializeField] GameObject restartBgObj = default;
     [SerializeField] GameObject sandObj = default;
     [SerializeField] GameObject playerObj = default;
     [SerializeField] GameObject celestialBodyObj = default;
     [SerializeField] GameObject cactus1Obj = default;
     [SerializeField] GameObject cactus2Obj = default;
 
+    static readonly float RESTART_DURATION = 1.25f;
+
     static Camera mainCamera;
     static Color dayColor;
     static int daysSurvived = 1;
     static int score = 0;
-    static bool isPlayerEntering = true;
+    static float restartTimer = 0f;
     static bool isDaytime = true;
     static bool isGameOver = false;
+    static bool restarting = false;
 
     static TextMeshPro scoreText;
     static TextMeshPro scoreBgText;
     static GameObject gameOver;
     static GameObject gameOverBg;
+    static GameObject restartButton;
+    static GameObject restartButtonBg;
     static GameObject sand;
     static MeloRelo meloRelo;
     static CelestialBody celestialBody;
@@ -41,13 +48,33 @@ public class GameController : MonoBehaviour
         dayColor = mainCamera.backgroundColor;
         scoreText = scoreObj.GetComponent<TextMeshPro>();
         scoreBgText = scoreBgObj.GetComponent<TextMeshPro>();
-        //gameOverText = gameOverObj.GetComponent<TextMeshPro>();
         gameOver = gameOverObj;
         gameOverBg = gameOverBgObj;
+        restartButton = restartObj;
+        restartButtonBg = restartBgObj;
         sand = sandObj;
         meloRelo = playerObj.GetComponent<MeloRelo>();
         celestialBody = celestialBodyObj.GetComponent<CelestialBody>();
 
+        DeactivateGameOverAssets();
+    }
+
+    public static void Restart()
+    {
+        string scoreStr = "0";
+        restartTimer = 0f;
+        restarting = true;
+        DeactivateGameOverAssets();
+        isDaytime = true;
+        score = 0;
+        daysSurvived = 0;
+        mainCamera.backgroundColor = dayColor;
+        scoreBgText.text = scoreStr;
+        scoreText.text = scoreStr;
+    }
+
+    static void DeactivateGameOverAssets()
+    {
         if (gameOver.activeSelf)
         {
             gameOver.SetActive(false);
@@ -58,30 +85,36 @@ public class GameController : MonoBehaviour
             gameOverBg.SetActive(false);
         }
 
-        //Vector3 clouds1Pos = CloudScroller.cloud1Pos;
-        //Vector3 clouds2Pos = CloudScroller.cloud2Pos;
+        if (restartButton.activeSelf)
+        {
+            restartButton.SetActive(false);
+        }
 
-        //clouds1.GetComponent<CloudScroller>().SetPosition(Vector3.Scale(clouds1Pos, new Vector3(0.00875f, 0.00875776376f, 1)));
-        //clouds2.GetComponent<CloudScroller>().SetPosition(Vector3.Scale(clouds2Pos, new Vector3(0.00875f, 0.00875776376f, 1)));
+        if (restartButtonBg.activeSelf)
+        {
+            restartButtonBg.SetActive(false);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isPlayerEntering)
-        {
-            bool check = meloRelo.IsEnteringFrame();
-            if (isPlayerEntering != check)
-            {
-                isPlayerEntering = check;
-            }
-        }
-        else if (!IsGameOver())
+        if (!IsPlayerEnteringScene() && !IsRestarting() && !IsGameOver())
         {
             string scoreStr = score.ToString();
             score++;
             scoreBgText.text = scoreStr;
             scoreText.text = scoreStr;
+        }
+
+        if (restarting)
+        {
+            restartTimer += Time.deltaTime;
+            if (restartTimer >= RESTART_DURATION)
+            {
+                isGameOver = false;
+                restarting = false;
+            }
         }
     }
     
@@ -114,7 +147,7 @@ public class GameController : MonoBehaviour
 
     public static bool IsPlayerEnteringScene()
     {
-        return isPlayerEntering;
+        return meloRelo.IsEnteringFrame();
     }
 
     public static bool IsDay()
@@ -138,11 +171,19 @@ public class GameController : MonoBehaviour
         isGameOver = true;
         gameOverBg.SetActive(true);
         gameOver.SetActive(true);
+        restartButtonBg.SetActive(true);
+        restartButton.GetComponent<RestartButton>().ResetButton();
+        restartButton.SetActive(true);
         meloRelo.Die();
     }
 
     public static bool IsGameOver()
     {
         return isGameOver;
+    }
+
+    public static bool IsRestarting()
+    {
+        return restarting;
     }
 }
