@@ -9,6 +9,9 @@ public class SignSwinger : MenuElement
     readonly float maxShift = 5f;
     bool shiftLeft = true;
 
+    // TODO: Remove this.
+    bool signDebug = true;
+
     public override void Start()
     {
         base.Start();
@@ -49,5 +52,11 @@ public class SignSwinger : MenuElement
         }
         
         rectTransform.Translate((shiftLeft ? -actualDelta : actualDelta), 0, 0);
+
+        if (signDebug)
+        {
+            Debug.Log("CURRENT SIGN X POS: " + rectTransform.position.x + "; X LOCAL POS: " + rectTransform.localPosition.x
+                + "; ANCHORED POS: " + rectTransform.anchoredPosition.x);
+        }
     }
 }
