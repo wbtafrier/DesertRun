@@ -22,7 +22,6 @@ public class RestartButton : MonoBehaviour
         {
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(point.x, point.y), Vector2.zero, 0);
-            Debug.Log(hit.collider);
             if (hit && hit.collider && hit.collider.CompareTag("RestartButton"))
             {
                 hit.collider.GetComponent<SpriteRenderer>().color = Color.magenta;
