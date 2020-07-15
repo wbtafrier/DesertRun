@@ -18,11 +18,13 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject cactus1Obj = default;
     [SerializeField] GameObject cactus2Obj = default;
 
+    static readonly float ROUGH_SCORE_PER_SEC = 50f;
     static readonly float RESTART_DURATION = 1.25f;
 
     static Camera mainCamera;
     static Color dayColor;
     static int daysSurvived = 1;
+    static float roughScore = 0f;
     static int score = 0;
     static float restartTimer = 0f;
     static bool isDaytime = true;
@@ -66,6 +68,7 @@ public class GameController : MonoBehaviour
         restarting = true;
         DeactivateGameOverAssets();
         isDaytime = true;
+        roughScore = 0f;
         score = 0;
         daysSurvived = 0;
         mainCamera.backgroundColor = dayColor;
@@ -102,7 +105,8 @@ public class GameController : MonoBehaviour
         if (!IsPlayerEnteringScene() && !IsRestarting() && !IsGameOver())
         {
             string scoreStr = score.ToString();
-            score++;
+            roughScore += ROUGH_SCORE_PER_SEC * Time.deltaTime;
+            score = (int)roughScore;
             scoreBgText.text = scoreStr;
             scoreText.text = scoreStr;
         }

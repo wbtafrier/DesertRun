@@ -22,7 +22,7 @@ public class MenuElement : MonoBehaviour
     {
         if (exiting)
         {
-            if (exitTimer < 5f)
+            if (exitTimer < 2f)
             {
                 exitTimer += Time.deltaTime;
                 rectTransform.Translate(exitVec);
