@@ -71,7 +71,7 @@ jobs:
           path: build
       - name: Display structure of downloaded files
         run: ls -R; cd ..; mkdir public; ls -R; mv -v ./build/WebGL/WebGL/* ./public/; ls -R; rm -r ./build/
-        working-directory: public
+        working-directory: build
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
