@@ -33,4 +33,12 @@ public class MenuController : MonoBehaviour
     {
         elementsOffScreen++;
     }
+
+    public void Quit()
+    {
+        Debug.Log("QUIT is not implemented yet, please refresh page.");
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+    }
 }
