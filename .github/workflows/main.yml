@@ -68,9 +68,9 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: Build
-          path: public
+          path: build
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls -R; cd ..; mkdir public; ls -R; mv -v ./build/WebGL/WebGL/* ./public/; ls -R; rm -r ./build/
         working-directory: public
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
