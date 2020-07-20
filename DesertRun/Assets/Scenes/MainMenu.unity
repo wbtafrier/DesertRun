@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266b4c5fcd893084bbf1914baafdb154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitSpeed: -150
+  exitSpeed: -300
   xExit: 0
   yExit: 1
 --- !u!1001 &334096841
@@ -337,7 +337,7 @@ PrefabInstance:
     - target: {fileID: 3448916605926684910, guid: 231180cfa3e316946b76da16620afb2f,
         type: 3}
       propertyPath: exitSpeed
-      value: 200
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 3448916605926684910, guid: 231180cfa3e316946b76da16620afb2f,
         type: 3}
@@ -746,7 +746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266b4c5fcd893084bbf1914baafdb154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitSpeed: 50
+  exitSpeed: 150
   xExit: 0
   yExit: 1
 --- !u!1 &1207248107
@@ -891,7 +891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 266b4c5fcd893084bbf1914baafdb154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitSpeed: -75
+  exitSpeed: -150
   xExit: 1
   yExit: 1
 --- !u!1 &1215868571
@@ -1142,6 +1142,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8247971278108383994, guid: 5b311dcc2b15f0142bfb92eb0ebcfa34,
+        type: 3}
+      propertyPath: exitSpeed
+      value: 600
+      objectReference: {fileID: 0}
     - target: {fileID: 8563127090595641220, guid: 5b311dcc2b15f0142bfb92eb0ebcfa34,
         type: 3}
       propertyPath: m_Name
@@ -1236,7 +1241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b32f8dc80deb45a1b6adad9b62a55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitSpeed: 80
+  exitSpeed: 100
   xExit: 0
   yExit: 1
 --- !u!1001 &1061179463444372626
@@ -1484,7 +1489,7 @@ PrefabInstance:
     - target: {fileID: 3448916605926684910, guid: 231180cfa3e316946b76da16620afb2f,
         type: 3}
       propertyPath: exitSpeed
-      value: 200
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 3448916605926684910, guid: 231180cfa3e316946b76da16620afb2f,
         type: 3}

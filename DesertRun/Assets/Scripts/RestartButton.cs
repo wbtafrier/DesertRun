@@ -9,6 +9,7 @@ public class RestartButton : MonoBehaviour
 
     float clickTimer = 0f;
     readonly float clickDuration = 0.1f;
+    bool hover = false;
     bool clicked = false;
 
     // Start is called before the first frame update
@@ -35,14 +36,27 @@ public class RestartButton : MonoBehaviour
             }
         }
 
-        if (!GameController.IsRestarting() && !clicked && Input.GetMouseButtonDown(0))
+        if (!GameController.IsRestarting() && !clicked)
         {
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(point.x, point.y), Vector2.zero, 0);
             if (hit && hit.collider && hit.collider.CompareTag("RestartButton"))
             {
-                hit.collider.GetComponent<SpriteRenderer>().color = Color.magenta;
-                clicked = true;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    hit.collider.GetComponent<SpriteRenderer>().color = Color.red;
+                    clicked = true;
+                }
+                else
+                {
+                    hit.collider.GetComponent<SpriteRenderer>().color = Color.magenta;
+                    hover = true;
+                }
+            }
+            else if (hover)
+            {
+                spriteRenderer.color = initColor;
+                hover = false;
             }
         }
     }
