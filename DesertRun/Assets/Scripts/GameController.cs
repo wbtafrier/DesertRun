@@ -1,17 +1,18 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
     //[SerializeField] GameObject clouds1 = default;
     //[SerializeField] GameObject clouds2 = default;
 
-    [SerializeField] GameObject scoreObj = default;
-    [SerializeField] GameObject scoreBgObj = default;
-    [SerializeField] GameObject gameOverObj = default;
-    [SerializeField] GameObject gameOverBgObj = default;
-    [SerializeField] GameObject restartObj = default;
-    [SerializeField] GameObject restartBgObj = default;
+    [SerializeField] TMP_Text scoreObj = default;
+    [SerializeField] TMP_Text scoreBgObj = default;
+    [SerializeField] TMP_Text gameOverObj = default;
+    [SerializeField] TMP_Text gameOverBgObj = default;
+    [SerializeField] GameObject restartButtonObj = default;
+    [SerializeField] Image restartBgObj = default;
     [SerializeField] GameObject sandObj = default;
     [SerializeField] GameObject playerObj = default;
     [SerializeField] GameObject celestialBodyObj = default;
@@ -31,12 +32,12 @@ public class GameController : MonoBehaviour
     static bool isGameOver = false;
     static bool restarting = false;
 
-    static TextMeshPro scoreText;
-    static TextMeshPro scoreBgText;
-    static GameObject gameOver;
-    static GameObject gameOverBg;
+    static TextMeshProUGUI scoreText;
+    static TextMeshProUGUI scoreBgText;
+    static TextMeshProUGUI gameOver;
+    static TextMeshProUGUI gameOverBg;
     static GameObject restartButton;
-    static GameObject restartButtonBg;
+    static Image restartButtonBg;
     static GameObject sand;
     static MeloRelo meloRelo;
     static CelestialBody celestialBody;
@@ -48,11 +49,11 @@ public class GameController : MonoBehaviour
     {
         mainCamera = Camera.main;
         dayColor = mainCamera.backgroundColor;
-        scoreText = scoreObj.GetComponent<TextMeshPro>();
-        scoreBgText = scoreBgObj.GetComponent<TextMeshPro>();
-        gameOver = gameOverObj;
-        gameOverBg = gameOverBgObj;
-        restartButton = restartObj;
+        scoreText = scoreObj.GetComponent<TextMeshProUGUI>();
+        scoreBgText = scoreBgObj.GetComponent<TextMeshProUGUI>();
+        gameOver = gameOverObj.GetComponent<TextMeshProUGUI>();
+        gameOverBg = gameOverBgObj.GetComponent<TextMeshProUGUI>();
+        restartButton = restartButtonObj;
         restartButtonBg = restartBgObj;
         sand = sandObj;
         meloRelo = playerObj.GetComponent<MeloRelo>();
@@ -61,7 +62,7 @@ public class GameController : MonoBehaviour
         DeactivateGameOverAssets();
     }
 
-    public static void Restart()
+    public void Restart()
     {
         string scoreStr = "0";
         restartTimer = 0f;
@@ -78,14 +79,14 @@ public class GameController : MonoBehaviour
 
     static void DeactivateGameOverAssets()
     {
-        if (gameOver.activeSelf)
+        if (gameOver.enabled)
         {
-            gameOver.SetActive(false);
+            gameOver.enabled = false;
         }
 
-        if (gameOverBg.activeSelf)
+        if (gameOverBg.enabled)
         {
-            gameOverBg.SetActive(false);
+            gameOverBg.enabled = false;
         }
 
         if (restartButton.activeSelf)
@@ -93,9 +94,9 @@ public class GameController : MonoBehaviour
             restartButton.SetActive(false);
         }
 
-        if (restartButtonBg.activeSelf)
+        if (restartButtonBg.enabled)
         {
-            restartButtonBg.SetActive(false);
+            restartButtonBg.enabled = false;
         }
     }
 
@@ -173,10 +174,10 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("GAME OVER");
         isGameOver = true;
-        gameOverBg.SetActive(true);
-        gameOver.SetActive(true);
-        restartButtonBg.SetActive(true);
-        restartButton.GetComponent<RestartButton>().ResetButton();
+        gameOverBg.enabled = true;
+        gameOver.enabled = true;
+        restartButtonBg.enabled = true;
+        //restartButton.GetComponent<RestartButton>().ResetButton();
         restartButton.SetActive(true);
         meloRelo.Die();
     }
