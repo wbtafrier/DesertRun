@@ -28,6 +28,7 @@ public class MainMenuController : MonoBehaviour, IStateController
     static GameObject closeButtonObj;
     static GameObject closeButtonBgObj;
 
+    static Button settingsButton;
     static MainMenuSign sign;
     static MainMenuAlien alien1;
     static MainMenuAlien alien2;
@@ -64,6 +65,7 @@ public class MainMenuController : MonoBehaviour, IStateController
         closeButtonObj.SetActive(true);
         closeButtonBgObj.SetActive(true);
 
+        settingsButton = settingsButtonObj.GetComponent<Button>();
         sign = signObj.GetComponent<MainMenuSign>();
         alien1 = alien1Obj.GetComponent<MainMenuAlien>();
         alien2 = alien2Obj.GetComponent<MainMenuAlien>();
@@ -73,6 +75,7 @@ public class MainMenuController : MonoBehaviour, IStateController
     public void OnStateEnable()
     {
         Start();
+        settingsButton.interactable = true;
         sign.ResetComp();
         alien1.ResetComp();
         alien2.ResetComp();
@@ -109,6 +112,7 @@ public class MainMenuController : MonoBehaviour, IStateController
     public void StartGame()
     {
         transitioning = true;
+        settingsButton.interactable = false;
         sign.Exit();
         alien1.Exit();
         alien2.Exit();
