@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,6 +34,10 @@ public class MainMenuController : MonoBehaviour, IStateController
     static MenuCactus cactus;
 
     private bool transitioning = false;
+
+#if UNITY_WEBGL
+    [DllImport("__Internal")] private static extern void QuitAnimation();
+#endif
 
     // Start is called before the first frame update
     void Start()
@@ -117,9 +122,14 @@ public class MainMenuController : MonoBehaviour, IStateController
 
     public void Quit()
     {
-        Debug.Log("QUIT is not implemented yet, please refresh page.");
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+
+#if UNITY_WEBGL
+        QuitAnimation();
+#endif
+
     }
 }

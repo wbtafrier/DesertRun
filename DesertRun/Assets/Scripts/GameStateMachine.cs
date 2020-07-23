@@ -170,10 +170,12 @@ public class GameStateMachine : MonoBehaviour
     {
         if (currentState.GetId() == GAME_OVER.GetId())
         {
+            GameController gc = gameController.GetComponent<GameController>();
             currentState = MAIN_MENU;
+            gc.ResetRelo();
             gameOverController.GetComponent<GameOverController>().OnStateDisable();
             gameOverController.SetActive(false);
-            gameController.GetComponent<GameController>().OnStateDisable();
+            gc.OnStateDisable();
             gameController.SetActive(false);
             mainMenuController.SetActive(true);
             mainMenuController.GetComponent<MainMenuController>().OnStateEnable();

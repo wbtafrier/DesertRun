@@ -145,11 +145,6 @@ public class GameController : MonoBehaviour, IStateController
             {
                 restarting = false;
             }
-
-            if (GameStateMachine.IsGameOver())
-            {
-                GameStateMachine.RestartGame();
-            }
         }
     }
 
@@ -171,6 +166,16 @@ public class GameController : MonoBehaviour, IStateController
             pauseButtonObj.SetActive(false);
             meloReloComp.Die();
             GameStateMachine.GameOver();
+        }
+    }
+
+    public void ResetRelo()
+    {
+        Vector3 reloInitPos = meloReloComp.GetInitialPosition();
+        meloReloComp.Restart();
+        if (!meloReloObj.transform.position.Equals(reloInitPos))
+        {
+            meloReloObj.transform.position = reloInitPos;
         }
     }
 
