@@ -72,6 +72,7 @@ public class MainMenuController : MonoBehaviour, IStateController
         alien1.ResetComp();
         alien2.ResetComp();
         cactus.ResetComp();
+        DayNightHandler.SetDay();
     }
 
     public void OnStateDisable()

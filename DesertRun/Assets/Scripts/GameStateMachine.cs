@@ -173,7 +173,6 @@ public class GameStateMachine : MonoBehaviour
             currentState = MAIN_MENU;
             gameOverController.GetComponent<GameOverController>().OnStateDisable();
             gameOverController.SetActive(false);
-            gameController.GetComponent<GameController>().Restart();
             gameController.GetComponent<GameController>().OnStateDisable();
             gameController.SetActive(false);
             mainMenuController.SetActive(true);
@@ -185,7 +184,6 @@ public class GameStateMachine : MonoBehaviour
             pauseController.GetComponent<PauseController>().OnStateDisable();
             pauseController.SetActive(false);
             Time.timeScale = 1f;
-            gameController.GetComponent<GameController>().Restart();
             gameController.GetComponent<GameController>().OnStateDisable();
             gameController.SetActive(false);
             mainMenuController.SetActive(true);
@@ -193,7 +191,7 @@ public class GameStateMachine : MonoBehaviour
         }
         else
         {
-            Debug.Log("WARNING: There was an attempt to restart game from outside of the GAME_OVER or PAUSE State.");
+            Debug.Log("WARNING: There was an attempt to return to the main menu from outside of the GAME_OVER or PAUSE State.");
         }
     }
 

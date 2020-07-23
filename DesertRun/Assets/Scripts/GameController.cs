@@ -69,16 +69,12 @@ public class GameController : MonoBehaviour, IStateController
         Start();
         scoreTextObj.SetActive(true);
         scoreBgTextObj.SetActive(true);
-        pauseButtonObj.SetActive(true);
-        pauseButtonBgObj.SetActive(true);
         meloReloObj.SetActive(true);
         cactus1.SetActive(true);
         cactus2.SetActive(true);
         rock.SetActive(true);
         snake.SetActive(true);
-
-        pauseButton.interactable = false;
-        DayNightHandler.SetDay();
+        Restart();
     }
 
     public void OnStateDisable()
@@ -148,6 +144,11 @@ public class GameController : MonoBehaviour, IStateController
             if (restartTimer >= RESTART_DURATION)
             {
                 restarting = false;
+            }
+
+            if (GameStateMachine.IsGameOver())
+            {
+                GameStateMachine.RestartGame();
             }
         }
     }
