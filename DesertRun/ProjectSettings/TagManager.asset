@@ -6,6 +6,7 @@ TagManager:
   tags:
   - RestartButton
   - CloseButton
+  - MenuAlien
   layers:
   - Default
   - TransparentFX

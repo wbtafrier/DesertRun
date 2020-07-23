@@ -2,64 +2,112 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameController : MonoBehaviour
+public class GameController : MonoBehaviour, IStateController
 {
     //[SerializeField] GameObject clouds1 = default;
     //[SerializeField] GameObject clouds2 = default;
-
-    [SerializeField] TMP_Text scoreObj = default;
-    [SerializeField] TMP_Text scoreBgObj = default;
-    [SerializeField] TMP_Text gameOverObj = default;
-    [SerializeField] TMP_Text gameOverBgObj = default;
-    [SerializeField] GameObject restartButtonObj = default;
-    [SerializeField] Image restartBgObj = default;
-    [SerializeField] GameObject sandObj = default;
-    [SerializeField] GameObject playerObj = default;
-    [SerializeField] GameObject celestialBodyObj = default;
-    [SerializeField] GameObject cactus1Obj = default;
-    [SerializeField] GameObject cactus2Obj = default;
+    
+    [SerializeField] GameObject scoreProp = default;
+    [SerializeField] GameObject scoreBgProp = default;
+    [SerializeField] GameObject pauseButtonProp = default;
+    [SerializeField] GameObject pauseButtonBgProp = default;
+    [SerializeField] GameObject sandProp = default;
+    [SerializeField] GameObject playerProp = default;
+    [SerializeField] GameObject cactus1Prop = default;
+    [SerializeField] GameObject cactus2Prop = default;
+    [SerializeField] GameObject rockProp = default;
+    [SerializeField] GameObject snakeProp = default;
 
     static readonly float ROUGH_SCORE_PER_SEC = 50f;
     static readonly float RESTART_DURATION = 1.25f;
 
     static Camera mainCamera;
-    static Color dayColor;
-    static int daysSurvived = 1;
     static float roughScore = 0f;
     static int score = 0;
     static float restartTimer = 0f;
-    static bool isDaytime = true;
-    static bool isGameOver = false;
     static bool restarting = false;
+
+    static GameObject scoreTextObj;
+    static GameObject scoreBgTextObj;
+    static GameObject pauseButtonObj;
+    static GameObject pauseButtonBgObj;
+    static GameObject sand;
+    static GameObject meloReloObj;
+    static GameObject cactus1;
+    static GameObject cactus2;
+    static GameObject rock;
+    static GameObject snake;
 
     static TextMeshProUGUI scoreText;
     static TextMeshProUGUI scoreBgText;
-    static TextMeshProUGUI gameOver;
-    static TextMeshProUGUI gameOverBg;
-    static GameObject restartButton;
-    static Image restartButtonBg;
-    static GameObject sand;
-    static MeloRelo meloRelo;
-    static CelestialBody celestialBody;
-    static DesertObject cactus1;
-    static DesertObject cactus2;
+    static Button pauseButton;
+    static MeloRelo meloReloComp;
 
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
-        dayColor = mainCamera.backgroundColor;
-        scoreText = scoreObj.GetComponent<TextMeshProUGUI>();
-        scoreBgText = scoreBgObj.GetComponent<TextMeshProUGUI>();
-        gameOver = gameOverObj.GetComponent<TextMeshProUGUI>();
-        gameOverBg = gameOverBgObj.GetComponent<TextMeshProUGUI>();
-        restartButton = restartButtonObj;
-        restartButtonBg = restartBgObj;
-        sand = sandObj;
-        meloRelo = playerObj.GetComponent<MeloRelo>();
-        celestialBody = celestialBodyObj.GetComponent<CelestialBody>();
+        scoreTextObj = scoreProp;
+        scoreBgTextObj = scoreBgProp;
+        pauseButtonObj = pauseButtonProp;
+        pauseButtonBgObj = pauseButtonBgProp;
+        sand = sandProp;
+        meloReloObj = playerProp;
+        cactus1 = cactus1Prop;
+        cactus2 = cactus2Prop;
+        rock = rockProp;
+        snake = snakeProp;
 
-        DeactivateGameOverAssets();
+        scoreText = scoreTextObj.GetComponent<TextMeshProUGUI>();
+        scoreBgText = scoreBgTextObj.GetComponent<TextMeshProUGUI>();
+        pauseButton = pauseButtonObj.GetComponent<Button>();
+        meloReloComp = meloReloObj.GetComponent<MeloRelo>();
+    }
+
+    public void OnStateEnable()
+    {
+        Start();
+        scoreTextObj.SetActive(true);
+        scoreBgTextObj.SetActive(true);
+        pauseButtonObj.SetActive(true);
+        pauseButtonBgObj.SetActive(true);
+        meloReloObj.SetActive(true);
+        cactus1.SetActive(true);
+        cactus2.SetActive(true);
+        rock.SetActive(true);
+        snake.SetActive(true);
+
+        pauseButton.interactable = false;
+        DayNightHandler.SetDay();
+    }
+
+    public void OnStateDisable()
+    {
+        scoreTextObj.SetActive(false);
+        scoreBgTextObj.SetActive(false);
+        pauseButtonObj.SetActive(false);
+        pauseButtonBgObj.SetActive(false);
+        meloReloObj.SetActive(false);
+        cactus1.SetActive(false);
+        cactus2.SetActive(false);
+        rock.SetActive(false);
+        snake.SetActive(false);
+    }
+
+    public void Pause()
+    {
+        if (!GameStateMachine.IsGamePaused())
+        {
+            pauseButtonBgObj.SetActive(false);
+            pauseButtonObj.SetActive(false);
+            GameStateMachine.PauseGame();
+        }
+    }
+
+    public void Resume()
+    {
+        pauseButtonBgObj.SetActive(true);
+        pauseButtonObj.SetActive(true);
     }
 
     public void Restart()
@@ -67,44 +115,26 @@ public class GameController : MonoBehaviour
         string scoreStr = "0";
         restartTimer = 0f;
         restarting = true;
-        DeactivateGameOverAssets();
-        isDaytime = true;
         roughScore = 0f;
         score = 0;
-        daysSurvived = 0;
-        mainCamera.backgroundColor = dayColor;
+
         scoreBgText.text = scoreStr;
         scoreText.text = scoreStr;
-    }
-
-    static void DeactivateGameOverAssets()
-    {
-        if (gameOver.enabled)
-        {
-            gameOver.enabled = false;
-        }
-
-        if (gameOverBg.enabled)
-        {
-            gameOverBg.enabled = false;
-        }
-
-        if (restartButton.activeSelf)
-        {
-            restartButton.SetActive(false);
-        }
-
-        if (restartButtonBg.enabled)
-        {
-            restartButtonBg.enabled = false;
-        }
+        pauseButtonBgObj.SetActive(true);
+        pauseButtonObj.SetActive(true);
+        pauseButton.interactable = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsPlayerEnteringScene() && !IsRestarting() && !IsGameOver())
+        if (!IsPlayerEnteringScene() && !IsRestarting() && !GameStateMachine.IsGameOver())
         {
+            if (!pauseButton.interactable)
+            {
+                pauseButton.interactable = true;
+            }
+
             string scoreStr = score.ToString();
             roughScore += ROUGH_SCORE_PER_SEC * Time.deltaTime;
             score = (int)roughScore;
@@ -117,54 +147,16 @@ public class GameController : MonoBehaviour
             restartTimer += Time.deltaTime;
             if (restartTimer >= RESTART_DURATION)
             {
-                isGameOver = false;
                 restarting = false;
             }
         }
     }
-    
-    public static void LightSwitch()
-    {
-        if (isDaytime)
-        {
-            SetNight();
-        }
-        else
-        {
-            SetDay();
-        }
-    }
-
-    public static void SetNight()
-    {
-        isDaytime = false;
-        celestialBody.ChangeToMoon();
-        mainCamera.backgroundColor = new Color(0.17254902f, 0.0431372549f, 0.235294118f);
-    }
-
-    public static void SetDay()
-    {
-        isDaytime = true;
-        daysSurvived++;
-        celestialBody.ChangeToSun();
-        mainCamera.backgroundColor = dayColor;
-    }
 
     public static bool IsPlayerEnteringScene()
     {
-        return meloRelo.IsEnteringFrame();
+        return meloReloComp.IsEnteringFrame();
     }
-
-    public static bool IsDay()
-    {
-        return isDaytime;
-    }
-
-    public static Camera GetMainCamera()
-    {
-        return mainCamera;
-    }
-
+    
     public static GameObject GetSand()
     {
         return sand;
@@ -172,19 +164,13 @@ public class GameController : MonoBehaviour
 
     public static void SetGameOver()
     {
-        Debug.Log("GAME OVER");
-        isGameOver = true;
-        gameOverBg.enabled = true;
-        gameOver.enabled = true;
-        restartButtonBg.enabled = true;
-        //restartButton.GetComponent<RestartButton>().ResetButton();
-        restartButton.SetActive(true);
-        meloRelo.Die();
-    }
-
-    public static bool IsGameOver()
-    {
-        return isGameOver;
+        if (!GameStateMachine.IsGameOver())
+        {
+            pauseButtonBgObj.SetActive(false);
+            pauseButtonObj.SetActive(false);
+            meloReloComp.Die();
+            GameStateMachine.GameOver();
+        }
     }
 
     public static bool IsRestarting()

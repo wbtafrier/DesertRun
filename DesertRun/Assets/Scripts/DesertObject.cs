@@ -14,7 +14,7 @@ public class DesertObject : GameElement
     public override void Update()
     {
         base.Update();
-        if (!GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameController.IsGameOver() && transform.position.x >= -17.5)
+        if (!GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameStateMachine.IsGameOver() && transform.position.x >= -17.5)
         {
             transform.Translate(-5f * Time.deltaTime, 0f, 0f);
         }

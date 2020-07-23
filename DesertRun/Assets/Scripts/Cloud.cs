@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameCloud : GameElement
+public class Cloud : GameElement
 {
     Vector3 pos;
 

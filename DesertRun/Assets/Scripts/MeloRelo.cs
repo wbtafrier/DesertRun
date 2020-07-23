@@ -15,12 +15,12 @@ public class MeloRelo : GameElement
     private float enteringFrameDuration = 0.005f;
 
     private bool jumping = false;
-    private bool firstJump = false;
-    private float jumpVelocity = 0.1f;
-    private float jumpTimer = 0f;
-    private float jumpDuration = 1f;
-    private float jumpHeight = 1.8f;
-    private float initHeight = 0f;
+    //private bool firstJump = false;
+    //private float jumpVelocity = 0.1f;
+    //private float jumpTimer = 0f;
+    //private float jumpDuration = 1f;
+    //private float jumpHeight = 1.8f;
+    //private float initHeight = 0f;
 
     private bool dead = false;
 

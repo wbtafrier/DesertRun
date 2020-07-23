@@ -19,7 +19,7 @@ public class MountainRange : GameElement
     public override void Update()
     {
         base.Update();
-        if (!GameController.IsGameOver() && !GameController.IsRestarting())
+        if (GameStateMachine.GetCurrentStateId() == GameStateMachine.GAME.GetId() && !GameController.IsRestarting())
         {
             if (transform.position.x <= -17.5)
             {
