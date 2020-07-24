@@ -6,7 +6,8 @@ public class GameController : MonoBehaviour, IStateController
 {
     //[SerializeField] GameObject clouds1 = default;
     //[SerializeField] GameObject clouds2 = default;
-    
+
+    [SerializeField] GameObject desertGeneratorProp = default;
     [SerializeField] GameObject scoreProp = default;
     [SerializeField] GameObject scoreBgProp = default;
     [SerializeField] GameObject pauseButtonProp = default;
@@ -27,6 +28,7 @@ public class GameController : MonoBehaviour, IStateController
     static float restartTimer = 0f;
     static bool restarting = false;
 
+    static GameObject desertGeneratorObj;
     static GameObject scoreTextObj;
     static GameObject scoreBgTextObj;
     static GameObject pauseButtonObj;
@@ -38,6 +40,7 @@ public class GameController : MonoBehaviour, IStateController
     static GameObject rock;
     static GameObject snake;
 
+    static DesertGenerator desertGenerator;
     static TextMeshProUGUI scoreText;
     static TextMeshProUGUI scoreBgText;
     static Button pauseButton;
@@ -47,6 +50,7 @@ public class GameController : MonoBehaviour, IStateController
     void Start()
     {
         mainCamera = Camera.main;
+        desertGeneratorObj = desertGeneratorProp;
         scoreTextObj = scoreProp;
         scoreBgTextObj = scoreBgProp;
         pauseButtonObj = pauseButtonProp;
@@ -58,6 +62,7 @@ public class GameController : MonoBehaviour, IStateController
         rock = rockProp;
         snake = snakeProp;
 
+        desertGenerator = desertGeneratorObj.GetComponent<DesertGenerator>();
         scoreText = scoreTextObj.GetComponent<TextMeshProUGUI>();
         scoreBgText = scoreBgTextObj.GetComponent<TextMeshProUGUI>();
         pauseButton = pauseButtonObj.GetComponent<Button>();
@@ -67,27 +72,31 @@ public class GameController : MonoBehaviour, IStateController
     public void OnStateEnable()
     {
         Start();
+        desertGeneratorObj.SetActive(true);
         scoreTextObj.SetActive(true);
         scoreBgTextObj.SetActive(true);
         meloReloObj.SetActive(true);
-        cactus1.SetActive(true);
-        cactus2.SetActive(true);
-        rock.SetActive(true);
-        snake.SetActive(true);
+        //cactus1.SetActive(true);
+        //cactus2.SetActive(true);
+        //rock.SetActive(true);
+        //snake.SetActive(true);
+        desertGenerator.OnGenEnable();
         Restart();
     }
 
     public void OnStateDisable()
     {
+        desertGeneratorObj.SetActive(false);
         scoreTextObj.SetActive(false);
         scoreBgTextObj.SetActive(false);
         pauseButtonObj.SetActive(false);
         pauseButtonBgObj.SetActive(false);
         meloReloObj.SetActive(false);
-        cactus1.SetActive(false);
-        cactus2.SetActive(false);
-        rock.SetActive(false);
-        snake.SetActive(false);
+        desertGenerator.OnGenDisable();
+        //cactus1.SetActive(false);
+        //cactus2.SetActive(false);
+        //rock.SetActive(false);
+        //snake.SetActive(false);
     }
 
     public void Pause()
