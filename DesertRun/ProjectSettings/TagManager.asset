@@ -7,6 +7,9 @@ TagManager:
   - RestartButton
   - CloseButton
   - MenuAlien
+  - Cactus
+  - Rock
+  - Snake
   layers:
   - Default
   - TransparentFX
