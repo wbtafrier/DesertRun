@@ -79,7 +79,7 @@ public class MainMenuController : MonoBehaviour, IStateController
         versionText = versionTextObj.GetComponent<TextMeshProUGUI>();
         versionTextBg = versionTextBgObj.GetComponent<TextMeshProUGUI>();
 
-        string v = "V" + PlayerSettings.bundleVersion;
+        string v = "V" + Application.version;
         versionText.text = v;
         versionTextBg.text = v;
         sign = signObj.GetComponent<MainMenuSign>();
