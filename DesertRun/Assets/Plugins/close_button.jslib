@@ -1,6 +1,6 @@
 mergeInto(LibraryManager.library, {
   QuitAnimation: function () {
-    var ifrm = document.getElementById('desert_run');
+    var ifrm = document.getElementById('unityContainer');
     if (ifrm !== null) {
         console.log("POST: Game Exit");
         ifrm.contentWindow.postMessage("Game Exit", "*");
