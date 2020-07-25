@@ -23,7 +23,7 @@ public class DesertObject : GameElement
             transform.Translate(DesertGenerator.desertObjectSpeed * Time.deltaTime, 0f, 0f);
             //rigidbodyComp.velocity = new Vector2(DesertGenerator.desertObjectSpeed, 0f);
         }
-        else if (activated && (transform.position.x < -17.5 || GameStateMachine.IsGameOver()))
+        else if (activated && (transform.position.x < -17.5 || GameController.IsRestarting() || GameStateMachine.IsGameOver()))
         {
             Deactivate();
         }

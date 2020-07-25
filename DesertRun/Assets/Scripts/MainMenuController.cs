@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +14,8 @@ public class MainMenuController : MonoBehaviour, IStateController
     [SerializeField] GameObject startButtonBgProp = default;
     [SerializeField] GameObject settingsButtonProp = default;
     [SerializeField] GameObject settingsButtonBgProp = default;
+    [SerializeField] GameObject versionTextProp = default;
+    [SerializeField] GameObject versionTextBgProp = default;
     [SerializeField] GameObject closeButtonProp = default;
     [SerializeField] GameObject closeButtonBgProp = default;
 
@@ -25,10 +27,14 @@ public class MainMenuController : MonoBehaviour, IStateController
     static GameObject startButtonBgObj;
     static GameObject settingsButtonObj;
     static GameObject settingsButtonBgObj;
+    static GameObject versionTextObj;
+    static GameObject versionTextBgObj;
     static GameObject closeButtonObj;
     static GameObject closeButtonBgObj;
 
     static Button settingsButton;
+    static TextMeshProUGUI versionText;
+    static TextMeshProUGUI versionTextBg;
     static MainMenuSign sign;
     static MainMenuAlien alien1;
     static MainMenuAlien alien2;
@@ -51,6 +57,8 @@ public class MainMenuController : MonoBehaviour, IStateController
         startButtonBgObj = startButtonBgProp;
         settingsButtonObj = settingsButtonProp;
         settingsButtonBgObj = settingsButtonBgProp;
+        versionTextObj = versionTextProp;
+        versionTextBgObj = versionTextBgProp;
         closeButtonObj = closeButtonProp;
         closeButtonBgObj = closeButtonBgProp;
 
@@ -62,10 +70,18 @@ public class MainMenuController : MonoBehaviour, IStateController
         startButtonBgObj.SetActive(true);
         settingsButtonObj.SetActive(true);
         settingsButtonBgObj.SetActive(true);
+        versionTextObj.SetActive(true);
+        versionTextBgObj.SetActive(true);
         closeButtonObj.SetActive(true);
         closeButtonBgObj.SetActive(true);
 
         settingsButton = settingsButtonObj.GetComponent<Button>();
+        versionText = versionTextObj.GetComponent<TextMeshProUGUI>();
+        versionTextBg = versionTextBgObj.GetComponent<TextMeshProUGUI>();
+
+        string v = "V" + PlayerSettings.bundleVersion;
+        versionText.text = v;
+        versionTextBg.text = v;
         sign = signObj.GetComponent<MainMenuSign>();
         alien1 = alien1Obj.GetComponent<MainMenuAlien>();
         alien2 = alien2Obj.GetComponent<MainMenuAlien>();
@@ -93,6 +109,8 @@ public class MainMenuController : MonoBehaviour, IStateController
         startButtonBgObj.SetActive(false);
         settingsButtonObj.SetActive(false);
         settingsButtonBgObj.SetActive(false);
+        versionTextObj.SetActive(false);
+        versionTextBgObj.SetActive(false);
         closeButtonObj.SetActive(false);
         closeButtonBgObj.SetActive(false);
     }
