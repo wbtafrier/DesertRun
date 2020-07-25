@@ -140,15 +140,15 @@ public class DesertGenerator : MonoBehaviour
     public static void ReturnToStack(DesertObject obj)
     {
         string tag = obj.gameObject.tag;
-        if (tag.Equals("Cactus"))
+        if (tag.Equals("Cactus") && !cactiStack.Contains(obj))
         {
             cactiStack.Push(obj);
         }
-        else if (tag.Equals("Rock"))
+        else if (tag.Equals("Rock") && !rockStack.Contains(obj))
         {
             rockStack.Push(obj);
         }
-        else if (tag.Equals("Snake"))
+        else if (tag.Equals("Snake") && !snakeStack.Contains(obj))
         {
             snakeStack.Push(obj);
         }

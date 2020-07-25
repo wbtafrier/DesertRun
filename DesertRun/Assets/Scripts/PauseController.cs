@@ -17,8 +17,8 @@ public class PauseController : MonoBehaviour, IStateController
     static GameObject pausedTextBgObj;
     static GameObject resumeButtonObj;
     static GameObject resumeButtonBgObj;
-    static GameObject restartButtonObj;
-    static GameObject restartButtonBgObj;
+    //static GameObject restartButtonObj;
+    //static GameObject restartButtonBgObj;
     static GameObject exitButtonObj;
     static GameObject exitButtonBgObj;
 
@@ -29,8 +29,8 @@ public class PauseController : MonoBehaviour, IStateController
         pausedTextBgObj = pausedTextBgProp;
         resumeButtonObj = resumeButtonProp;
         resumeButtonBgObj = resumeButtonBgProp;
-        restartButtonObj = restartButtonProp;
-        restartButtonBgObj = restartButtonBgProp;
+        //restartButtonObj = restartButtonProp;
+        //restartButtonBgObj = restartButtonBgProp;
         exitButtonObj = exitButtonProp;
         exitButtonBgObj = exitButtonBgProp;
     }
@@ -43,8 +43,8 @@ public class PauseController : MonoBehaviour, IStateController
         pausedTextObj.SetActive(true);
         resumeButtonBgObj.SetActive(true);
         resumeButtonObj.SetActive(true);
-        restartButtonBgObj.SetActive(true);
-        restartButtonObj.SetActive(true);
+        //restartButtonBgObj.SetActive(true);
+        //restartButtonObj.SetActive(true);
         exitButtonBgObj.SetActive(true);
         exitButtonObj.SetActive(true);
     }
@@ -71,15 +71,15 @@ public class PauseController : MonoBehaviour, IStateController
             resumeButtonBgObj.SetActive(false);
         }
 
-        if (restartButtonObj.activeSelf)
-        {
-            restartButtonObj.SetActive(false);
-        }
+        //if (restartButtonObj.activeSelf)
+        //{
+        //    restartButtonObj.SetActive(false);
+        //}
 
-        if (restartButtonBgObj.activeSelf)
-        {
-            restartButtonBgObj.SetActive(false);
-        }
+        //if (restartButtonBgObj.activeSelf)
+        //{
+        //    restartButtonBgObj.SetActive(false);
+        //}
 
         if (exitButtonObj.activeSelf)
         {
