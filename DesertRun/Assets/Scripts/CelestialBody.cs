@@ -9,8 +9,8 @@ public class CelestialBody : GameElement
     Sprite fullMoonSprite;
     Vector3 initPos;
     readonly float INIT_SUNDOWN_VELOCITY_Y = -0.5f;
-    readonly float VELOCITY_Y = -0.1f;
-    readonly float VELOCITY_X = -0.175f;
+    readonly float VELOCITY_Y = -0.15f;
+    readonly float VELOCITY_X = -0.2625f;
     bool enterFrame = true;
 
     public override void Restart() { }

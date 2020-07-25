@@ -13,6 +13,7 @@ public class MainMenuSign : MonoBehaviour
     private Vector3 leftPos, rightPos;
     private Vector3 exitPos = Vector3.zero;
     private bool movingLeft = true;
+    private bool entering = false;
     private bool exiting = false;
     private bool hasExited = false;
 
@@ -34,7 +35,7 @@ public class MainMenuSign : MonoBehaviour
         Vector3 currPos = transform.position;
         Vector3 targetPos;
         
-        if (!exiting)
+        if (!exiting && !entering)
         {
             targetPos = movingLeft ? leftPos : rightPos;
 
@@ -47,7 +48,7 @@ public class MainMenuSign : MonoBehaviour
                 movingLeft = !movingLeft;
             }
         }
-        else if (!hasExited)
+        else if (!entering && exiting && !hasExited)
         {
             if (exitPos.Equals(Vector3.zero))
             {
@@ -61,6 +62,17 @@ public class MainMenuSign : MonoBehaviour
             else
             {
                 hasExited = true;
+            }
+        }
+        else if (entering && !exiting && !hasExited)
+        {
+            if (!currPos.Equals(initPos))
+            {
+                transform.position = Vector3.MoveTowards(currPos, initPos, SIGN_EXIT_SPEED * Time.deltaTime);
+            }
+            else
+            {
+                entering = false;
             }
         }
 
@@ -80,6 +92,6 @@ public class MainMenuSign : MonoBehaviour
     {
         exiting = false;
         hasExited = false;
-        transform.position = initPos;
+        entering = true;
     }
 }

@@ -9,6 +9,7 @@ public class MenuCactus : MonoBehaviour
     private Vector3 initPos = Vector3.zero;
     private Vector3 exitPos = Vector3.zero;
 
+    private bool entering = false;
     private bool exiting = false;
     private bool hasExited = false;
 
@@ -22,10 +23,9 @@ public class MenuCactus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (exiting && !hasExited)
+        Vector3 currPos = transform.position;
+        if (!entering && exiting && !hasExited)
         {
-            Vector3 currPos = transform.position;
-
             if (!currPos.Equals(exitPos))
             {
                 transform.position = Vector3.MoveTowards(currPos, exitPos, EXIT_SPEED * Time.deltaTime);
@@ -33,6 +33,17 @@ public class MenuCactus : MonoBehaviour
             else
             {
                 hasExited = true;
+            }
+        }
+        else if (entering && !exiting && !hasExited)
+        {
+            if (!currPos.Equals(initPos))
+            {
+                transform.position = Vector3.MoveTowards(currPos, initPos, EXIT_SPEED * Time.deltaTime);
+            }
+            else
+            {
+                entering = false;
             }
         }
     }
@@ -51,6 +62,6 @@ public class MenuCactus : MonoBehaviour
     {
         exiting = false;
         hasExited = false;
-        transform.position = initPos;
+        entering = true;
     }
 }
