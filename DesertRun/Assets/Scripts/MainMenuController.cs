@@ -32,6 +32,7 @@ public class MainMenuController : MonoBehaviour, IStateController
     static GameObject closeButtonObj;
     static GameObject closeButtonBgObj;
 
+    static Button startButton;
     static Button settingsButton;
     static TextMeshProUGUI versionText;
     static TextMeshProUGUI versionTextBg;
@@ -75,6 +76,7 @@ public class MainMenuController : MonoBehaviour, IStateController
         closeButtonObj.SetActive(true);
         closeButtonBgObj.SetActive(true);
 
+        startButton = startButtonObj.GetComponent<Button>();
         settingsButton = settingsButtonObj.GetComponent<Button>();
         versionText = versionTextObj.GetComponent<TextMeshProUGUI>();
         versionTextBg = versionTextBgObj.GetComponent<TextMeshProUGUI>();
@@ -91,7 +93,8 @@ public class MainMenuController : MonoBehaviour, IStateController
     public void OnStateEnable()
     {
         Start();
-        settingsButton.interactable = true;
+        transitioning = false;
+        startButton.interactable = false;
         sign.ResetComp();
         alien1.ResetComp();
         alien2.ResetComp();
@@ -124,6 +127,11 @@ public class MainMenuController : MonoBehaviour, IStateController
             {
                 GameStateMachine.StartGame();
             }
+        }
+        else if (sign.HasEntered() && alien1.HasEntered() && alien2.HasEntered() && cactus.HasEntered())
+        {
+            startButton.interactable = true;
+            settingsButton.interactable = true;
         }
     }
 

@@ -26,6 +26,7 @@ public class MainMenuAlien : MonoBehaviour
     bool popTargetMet = false;
     Vector3 popTarget = Vector3.zero;
     Vector3 prePopPos = Vector3.zero;
+    private bool hasEntered = false;
     private bool entering = false;
     private bool exiting = false;
     private bool hasExited = false;
@@ -186,9 +187,10 @@ public class MainMenuAlien : MonoBehaviour
             {
                 transform.position = Vector3.MoveTowards(currPos, initPos, EXIT_SPEED * Time.deltaTime);
             }
-            else
+            else if (entering || !hasEntered)
             {
                 entering = false;
+                hasEntered = true;
             }
         }
     }
@@ -196,6 +198,11 @@ public class MainMenuAlien : MonoBehaviour
     void Pop()
     {
         popping = true;
+    }
+
+    public bool HasEntered()
+    {
+        return hasEntered;
     }
 
     public void Exit()
@@ -213,5 +220,6 @@ public class MainMenuAlien : MonoBehaviour
         exiting = false;
         hasExited = false;
         entering = true;
+        hasEntered = false;
     }
 }

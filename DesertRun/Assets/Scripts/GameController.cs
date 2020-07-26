@@ -122,6 +122,7 @@ public class GameController : MonoBehaviour, IStateController
         restarting = true;
         roughScore = 0f;
         score = 0;
+        desertGenerator.Restart();
 
         scoreBgText.text = scoreStr;
         scoreText.text = scoreStr;
@@ -160,6 +161,18 @@ public class GameController : MonoBehaviour, IStateController
     public static bool IsPlayerEnteringScene()
     {
         return meloReloComp.IsEnteringFrame();
+    }
+
+    public static float GetRoughScore()
+    {
+        return roughScore;
+    }
+
+    public static void MultiplyGameSpeed(float factor)
+    {
+        DayNightHandler.MultiplyCycleSpeed(factor);
+        MountainRange.MultiplySpeed(factor);
+        Cloud.MultiplySpeed(factor);
     }
     
     public static GameObject GetSand()

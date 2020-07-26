@@ -9,8 +9,10 @@ public class CelestialBody : GameElement
     Sprite fullMoonSprite;
     Vector3 initPos;
     readonly float INIT_SUNDOWN_VELOCITY_Y = -0.5f;
-    readonly float VELOCITY_Y = -0.15f;
-    readonly float VELOCITY_X = -0.2625f;
+    static readonly float INIT_VELOCITY_Y = -0.15f;
+    static readonly float INIT_VELOCITY_X = -0.2625f;
+    float currVelocityY = INIT_VELOCITY_Y;
+    float currVelocityX = INIT_VELOCITY_X;
     bool enterFrame = true;
 
     public override void Restart() { }
@@ -35,6 +37,8 @@ public class CelestialBody : GameElement
             {
                 if (transform.position.y <= 3.75f)
                 {
+                    currVelocityY = INIT_VELOCITY_Y;
+                    currVelocityX = INIT_VELOCITY_X;
                     enterFrame = false;
                 }
                 else
@@ -48,9 +52,15 @@ public class CelestialBody : GameElement
             }
             else
             {
-                transform.Translate(VELOCITY_X * Time.deltaTime, VELOCITY_Y * Time.deltaTime, 0);
+                transform.Translate(currVelocityX * Time.deltaTime, currVelocityY * Time.deltaTime, 0);
             }
         }
+    }
+
+    public void MultiplySpeed(float factor)
+    {
+        currVelocityX *= factor;
+        currVelocityY *= factor;
     }
 
     public void ChangeToMoon()

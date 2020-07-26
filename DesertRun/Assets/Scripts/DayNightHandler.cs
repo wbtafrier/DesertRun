@@ -32,6 +32,11 @@ public class DayNightHandler : MonoBehaviour
         }
     }
 
+    public static void MultiplyCycleSpeed(float factor)
+    {
+        celestialBody.MultiplySpeed(factor);
+    }
+
     public static void LightSwitch()
     {
         if (isDaytime)

@@ -10,6 +10,7 @@ public class MenuCactus : MonoBehaviour
     private Vector3 exitPos = Vector3.zero;
 
     private bool entering = false;
+    private bool hasEntered = false;
     private bool exiting = false;
     private bool hasExited = false;
 
@@ -41,11 +42,17 @@ public class MenuCactus : MonoBehaviour
             {
                 transform.position = Vector3.MoveTowards(currPos, initPos, EXIT_SPEED * Time.deltaTime);
             }
-            else
+            else if (entering || !hasEntered)
             {
                 entering = false;
+                hasEntered = true;
             }
         }
+    }
+
+    public bool HasEntered()
+    {
+        return hasEntered;
     }
 
     public void Exit()
@@ -63,5 +70,6 @@ public class MenuCactus : MonoBehaviour
         exiting = false;
         hasExited = false;
         entering = true;
+        hasEntered = false;
     }
 }

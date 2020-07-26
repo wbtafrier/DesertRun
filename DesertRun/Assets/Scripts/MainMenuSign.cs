@@ -14,6 +14,7 @@ public class MainMenuSign : MonoBehaviour
     private Vector3 exitPos = Vector3.zero;
     private bool movingLeft = true;
     private bool entering = false;
+    private bool hasEntered = false;
     private bool exiting = false;
     private bool hasExited = false;
 
@@ -70,12 +71,18 @@ public class MainMenuSign : MonoBehaviour
             {
                 transform.position = Vector3.MoveTowards(currPos, initPos, SIGN_EXIT_SPEED * Time.deltaTime);
             }
-            else
+            else if (entering || !hasEntered)
             {
                 entering = false;
+                hasEntered = true;
             }
         }
 
+    }
+
+    public bool HasEntered()
+    {
+        return hasEntered;
     }
 
     public void Exit()
@@ -93,5 +100,6 @@ public class MainMenuSign : MonoBehaviour
         exiting = false;
         hasExited = false;
         entering = true;
+        hasEntered = false;
     }
 }

@@ -13,13 +13,34 @@ public class DesertGenerator : MonoBehaviour
     public static readonly float SPAWN_Y_ROCK = -1.994309f;
     public static readonly float SPAWN_Y_SNAKE = -1.64f;
 
-    public static float desertObjectSpeed = -5f;
-
     private static Stack<DesertObject> cactiStack = new Stack<DesertObject>();
     private static Stack<DesertObject> rockStack = new Stack<DesertObject>();
     private static Stack<DesertObject> snakeStack = new Stack<DesertObject>();
 
     private float desertTimer = 0f;
+
+    private static readonly float INIT_DESERT_TIMER_CURR_MIN = 1.75f;
+    private static readonly float INIT_DESERT_TIMER_CURR_MAX = 3f;
+    private static readonly float INIT_DESERT_TIMER_CURR_DURATION = 2f;
+    private static readonly float INIT_DESERT_OBJECT_SPEED = -5f;
+
+    private float desertTimerCurrMin = INIT_DESERT_TIMER_CURR_MIN;
+    private float desertTimerCurrMax = INIT_DESERT_TIMER_CURR_MAX;
+    private float desertTimerCurrDuration = INIT_DESERT_TIMER_CURR_DURATION;
+    public static float desertObjectSpeed = INIT_DESERT_OBJECT_SPEED;
+
+    private bool speed1kCheckpoint = false;
+    //private bool speed2kCheckpoint = false;
+    private bool speed3kCheckpoint = false;
+    //private bool speed4kCheckpoint = false;
+    //private bool speed5kCheckpoint = false;
+    //private bool speed6kCheckpoint = false;
+    private bool speed7kCheckpoint = false;
+    //private bool speed8kCheckpoint = false;
+    //private bool speed9kCheckpoint = false;
+    //private bool speed10kCheckpoint = false;
+
+    private bool lastSpawnWasDouble = false;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +59,22 @@ public class DesertGenerator : MonoBehaviour
         {
             snakeStack.Push(obj.GetComponent<DesertObject>());
         }
+    }
+
+    public void Restart()
+    {
+        desertTimer = 0f;
+        desertTimerCurrMin = INIT_DESERT_TIMER_CURR_MIN;
+        desertTimerCurrMax = INIT_DESERT_TIMER_CURR_MAX;
+        desertTimerCurrDuration = INIT_DESERT_TIMER_CURR_DURATION;
+        desertObjectSpeed = INIT_DESERT_OBJECT_SPEED;
+        //timer1kCheckpoint = false;
+        //timer5kCheckpoint = false;
+        //timer10kCheckpoint = false;
+        speed1kCheckpoint = false;
+        speed3kCheckpoint = false;
+        speed7kCheckpoint = false;
+        lastSpawnWasDouble = false;
     }
 
     public void OnGenEnable()
@@ -88,7 +125,9 @@ public class DesertGenerator : MonoBehaviour
         desertTimer += Time.deltaTime;
         if (!GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameStateMachine.IsGameOver() && transform.position.x >= -17.5)
         {
-            if (desertTimer >= 2f)
+            float score = GameController.GetRoughScore();
+
+            if (desertTimer >= desertTimerCurrDuration)
             {
                 DesertObject obj = FindNextObstacle();
                 float y = SPAWN_Y_CACTUS;
@@ -104,9 +143,56 @@ public class DesertGenerator : MonoBehaviour
 
                 obj.gameObject.transform.position = new Vector3(SPAWN_X, y, obj.gameObject.transform.position.z);
                 obj.Activate();
+                desertTimerCurrDuration = GetNextDesertTimerDuration(score);
                 desertTimer = 0f;
             }
+
+            if (!speed1kCheckpoint && score >= 1000)
+            {
+                desertTimerCurrMax -= 0.5f;
+                desertTimerCurrMin -= 0.25f;
+                desertObjectSpeed *= 1.2f;
+                GameController.MultiplyGameSpeed(1.2f);
+                speed1kCheckpoint = true;
+            }
+            else if (!speed3kCheckpoint && score >= 3000)
+            {
+                desertTimerCurrMax -= 0.25f;
+                desertTimerCurrMin -= 0.25f;
+                desertObjectSpeed *= 1.2f;
+                GameController.MultiplyGameSpeed(1.2f);
+                speed3kCheckpoint = true;
+            }
+            else if (!speed7kCheckpoint && score >= 7000)
+            {
+                desertTimerCurrMax -= 0.25f;
+                desertTimerCurrMin -= 0.25f;
+                desertObjectSpeed *= 1.2f;
+                GameController.MultiplyGameSpeed(1.2f);
+                speed7kCheckpoint = true;
+            }
         }
+    }
+
+    private float GetNextDesertTimerDuration(float score)
+    {
+        if (!lastSpawnWasDouble)
+        {
+            int doubleSpawnChance = 10;
+            int r = Random.Range(0, 100);
+
+            if (r < doubleSpawnChance)
+            {
+                lastSpawnWasDouble = true;
+                return score < 7000 ? 0.3f : 0.2f;
+            }
+        }
+        else
+        {
+            lastSpawnWasDouble = false;
+        }
+
+        return Random.Range(desertTimerCurrMin, desertTimerCurrMax);
     }
 
     private DesertObject FindNextObstacle()

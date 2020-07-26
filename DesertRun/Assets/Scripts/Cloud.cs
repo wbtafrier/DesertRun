@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Cloud : GameElement
 {
+    private static readonly float INIT_VELOCITY = -0.7f;
+    private static float velocity = INIT_VELOCITY;
+
     Vector3 pos;
 
     // Start is called before the first frame update
@@ -13,7 +14,10 @@ public class Cloud : GameElement
         pos = transform.position;
     }
 
-    public override void Restart() { }
+    public override void Restart()
+    {
+        velocity = INIT_VELOCITY;
+    }
 
     // Update is called once per frame
     public override void Update()
@@ -26,8 +30,13 @@ public class Cloud : GameElement
                 transform.position = new Vector3(20.6167f, pos.y, pos.z);
             }
 
-            transform.Translate(-0.7f * Time.deltaTime, 0, 0);
+            transform.Translate(velocity * Time.deltaTime, 0, 0);
             pos = transform.position;
         }
+    }
+
+    public static void MultiplySpeed(float factor)
+    {
+        velocity *= factor;
     }
 }
