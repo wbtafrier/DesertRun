@@ -10,6 +10,8 @@ public class GameController : MonoBehaviour, IStateController
     [SerializeField] GameObject desertGeneratorProp = default;
     [SerializeField] GameObject scoreProp = default;
     [SerializeField] GameObject scoreBgProp = default;
+    [SerializeField] GameObject fasterTextProp = default;
+    [SerializeField] GameObject fasterTextBgProp = default;
     [SerializeField] GameObject pauseButtonProp = default;
     [SerializeField] GameObject pauseButtonBgProp = default;
     [SerializeField] GameObject sandProp = default;
@@ -21,16 +23,21 @@ public class GameController : MonoBehaviour, IStateController
 
     static readonly float ROUGH_SCORE_PER_SEC = 50f;
     static readonly float RESTART_DURATION = 1.25f;
+    static readonly float TEXT_SPEED_EFFECT_DURATION = 3f;
 
     static Camera mainCamera;
     static float roughScore = 0f;
     static int score = 0;
     static float restartTimer = 0f;
     static bool restarting = false;
+    static bool textSpeedEffect = false;
+    static float textSpeedEffectTimer = 0f;
 
     static GameObject desertGeneratorObj;
     static GameObject scoreTextObj;
     static GameObject scoreBgTextObj;
+    static GameObject fasterTextObj;
+    static GameObject fasterBgTextObj;
     static GameObject pauseButtonObj;
     static GameObject pauseButtonBgObj;
     static GameObject sand;
@@ -43,8 +50,12 @@ public class GameController : MonoBehaviour, IStateController
     static DesertGenerator desertGenerator;
     static TextMeshProUGUI scoreText;
     static TextMeshProUGUI scoreBgText;
+    static TextMeshProUGUI fasterText;
+    static TextMeshProUGUI fasterBgText;
     static Button pauseButton;
     static MeloRelo meloReloComp;
+
+    static Color scoreTextDefaultColor;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +64,8 @@ public class GameController : MonoBehaviour, IStateController
         desertGeneratorObj = desertGeneratorProp;
         scoreTextObj = scoreProp;
         scoreBgTextObj = scoreBgProp;
+        fasterTextObj = fasterTextProp;
+        fasterBgTextObj = fasterTextBgProp;
         pauseButtonObj = pauseButtonProp;
         pauseButtonBgObj = pauseButtonBgProp;
         sand = sandProp;
@@ -65,8 +78,12 @@ public class GameController : MonoBehaviour, IStateController
         desertGenerator = desertGeneratorObj.GetComponent<DesertGenerator>();
         scoreText = scoreTextObj.GetComponent<TextMeshProUGUI>();
         scoreBgText = scoreBgTextObj.GetComponent<TextMeshProUGUI>();
+        fasterText = fasterTextObj.GetComponent<TextMeshProUGUI>();
+        fasterBgText = fasterBgTextObj.GetComponent<TextMeshProUGUI>();
         pauseButton = pauseButtonObj.GetComponent<Button>();
         meloReloComp = meloReloObj.GetComponent<MeloRelo>();
+
+        scoreTextDefaultColor = scoreText.color;
     }
 
     public void OnStateEnable()
@@ -86,6 +103,8 @@ public class GameController : MonoBehaviour, IStateController
 
     public void OnStateDisable()
     {
+        ResetScoreTextColor();
+
         desertGeneratorObj.SetActive(false);
         scoreTextObj.SetActive(false);
         scoreBgTextObj.SetActive(false);
@@ -126,6 +145,7 @@ public class GameController : MonoBehaviour, IStateController
 
         scoreBgText.text = scoreStr;
         scoreText.text = scoreStr;
+        ResetScoreTextColor();
         pauseButtonBgObj.SetActive(true);
         pauseButtonObj.SetActive(true);
         pauseButton.interactable = false;
@@ -146,6 +166,24 @@ public class GameController : MonoBehaviour, IStateController
             score = (int)roughScore;
             scoreBgText.text = scoreStr;
             scoreText.text = scoreStr;
+
+            if (textSpeedEffect)
+            {
+                textSpeedEffectTimer += Time.deltaTime;
+                if (scoreText.color != Color.red)
+                {
+                    scoreText.color = Color.red;
+                    scoreText.fontStyle = FontStyles.Italic;
+                    scoreBgText.fontStyle = FontStyles.Italic;
+                    fasterTextObj.SetActive(true);
+                    fasterBgTextObj.SetActive(true);
+                }
+                
+                if (textSpeedEffectTimer >= TEXT_SPEED_EFFECT_DURATION)
+                {
+                    ResetScoreTextColor();
+                }
+            }
         }
 
         if (restarting)
@@ -156,6 +194,17 @@ public class GameController : MonoBehaviour, IStateController
                 restarting = false;
             }
         }
+    }
+
+    public static void ResetScoreTextColor()
+    {
+        scoreText.color = scoreTextDefaultColor;
+        scoreText.fontStyle = FontStyles.Normal;
+        scoreBgText.fontStyle = FontStyles.Normal;
+        textSpeedEffectTimer = 0f;
+        textSpeedEffect = false;
+        fasterTextObj.SetActive(false);
+        fasterBgTextObj.SetActive(false);
     }
 
     public static bool IsPlayerEnteringScene()
@@ -173,6 +222,7 @@ public class GameController : MonoBehaviour, IStateController
         DayNightHandler.MultiplyCycleSpeed(factor);
         MountainRange.MultiplySpeed(factor);
         Cloud.MultiplySpeed(factor);
+        textSpeedEffect = true;
     }
     
     public static GameObject GetSand()

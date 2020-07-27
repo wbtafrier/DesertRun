@@ -6,18 +6,24 @@ public class MeloRelo : GameElement
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigidbodyComp;
 
+    private static readonly float ENTER_VELOCITY_X = 1.5f;
+    private static readonly float ENTER_FRAME_DURATION = 0.005f;
+    private static readonly float JUMP_PRESS_MAX_TIME = 0.2f;
+    private static readonly float JUMP_VELOCITY_MIN = 8f;
+    private static readonly float GRAVITY_SCALE = 1.75f;
+
     private int currSpriteIndex = 0;
     private float spriteChangeTimer = 0f;
     private float secondsBtwnSpriteChange = 0.05f;
 
     private bool enteringFrame = false;
     private float enteringFrameTimer = 0;
-    private float enteringFrameDuration = 0.005f;
 
     private bool jumping = false;
     //private bool firstJump = false;
     //private float jumpVelocity = 0.1f;
-    //private float jumpTimer = 0f;
+    private float jumpTimer = 0f;
+    private float jumpPressTimer = 0f;
     //private float jumpDuration = 1f;
     //private float jumpHeight = 1.8f;
     //private float initHeight = 0f;
@@ -82,31 +88,55 @@ public class MeloRelo : GameElement
             if (enteringFrame)
             {
                 enteringFrameTimer += Time.deltaTime;
-                if (enteringFrameTimer >= enteringFrameDuration)
+
+                if (rigidbodyComp.gravityScale != GRAVITY_SCALE)
                 {
+                    rigidbodyComp.gravityScale = GRAVITY_SCALE;
+                }
+
+                if (enteringFrameTimer >= ENTER_FRAME_DURATION)
+                {
+                    Vector2 rigidPos = rigidbodyComp.position;
+                    float x = rigidPos.x, y = rigidPos.y;
+
                     enteringFrameTimer = 0f;
-                    if (rigidbodyComp.position.x < -6.5)
+                    if (x < -6.5)
                     {
-                        rigidbodyComp.velocity = new Vector2(1.5f, 0f);
+                        rigidbodyComp.velocity = new Vector2(ENTER_VELOCITY_X, 0f);
                     }
                     else
                     {
-                        if (rigidbodyComp.position.x > -6.5)
+                        if (x > -6.5)
                         {
-                            rigidbodyComp.position = new Vector3(-6.5f, rigidbodyComp.position.y);
+                            rigidbodyComp.position = new Vector2(-6.5f, y);
                         }
                         rigidbodyComp.velocity = new Vector2(0f, 0f);
                         rigidbodyComp.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
-                        rigidbodyComp.gravityScale = 1f;
                         enteringFrame = false;
                     }
                 }
             }
             else
             {
-                if (Input.GetButtonDown("Jump"))
+                float axis = Input.GetAxis("Jump");
+                if (axis > 0 && jumpPressTimer < JUMP_PRESS_MAX_TIME && !dead)
                 {
-                    Jump();
+                    float d = Time.deltaTime;
+                    jumpPressTimer += d;
+                    Jump(axis, d);
+                }
+                else if (axis <= 0 && jumping && jumpPressTimer > 0 && jumpPressTimer < JUMP_PRESS_MAX_TIME)
+                {
+                    jumpPressTimer = JUMP_PRESS_MAX_TIME;
+                }
+                else if (axis <= 0 && jumpPressTimer > 0 && !jumping && !dead)
+                {
+                    jumpPressTimer = 0f;
+                }
+
+                if (jumping)
+                {
+                    jumpTimer += Time.deltaTime;
                 }
             }
         }
@@ -114,16 +144,15 @@ public class MeloRelo : GameElement
         UpdateCollider();
     }
 
-    void Jump()
+    void Jump(float axis, float dTime)
     {
-        if (!jumping && !dead)
-        {
-            jumping = true;
-            if (rigidbodyComp.position.y < 1f)
-            {
-                rigidbodyComp.velocity = new Vector2(0f, 8f);
-            }
-        }
+        //if (rigidbodyComp.velocity.y <= 0f)
+        //{
+        jumping = true;
+
+        float multiplier = (1f + (1.5f * dTime)) * axis;
+        rigidbodyComp.velocity = new Vector2(0f, JUMP_VELOCITY_MIN * multiplier);
+        //}
     }
 
     void Animate()
@@ -158,6 +187,7 @@ public class MeloRelo : GameElement
     public void Die()
     {
         dead = true;
+        jumpTimer = 0f;
         jumping = false;
     }
 
@@ -178,13 +208,14 @@ public class MeloRelo : GameElement
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!collision.transform.Equals(GameController.GetSand().transform))
+        if (!collision.transform.tag.Equals("Surface"))
         {
             rigidbodyComp.constraints = RigidbodyConstraints2D.None;
             GameController.SetGameOver();
         }
-        else if (jumping)
+        else if (jumpTimer > 0.01f)
         {
+            jumpTimer = 0f;
             jumping = false;
         }
     }
