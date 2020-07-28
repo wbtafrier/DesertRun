@@ -7,39 +7,55 @@ public class DesertGenerator : MonoBehaviour
     [SerializeField] List<GameObject> cactiList;
     [SerializeField] List<GameObject> rockList;
     [SerializeField] List<GameObject> snakeList;
+    [SerializeField] List<GameObject> tallCactiList;
+    [SerializeField] List<GameObject> balloonList;
     [SerializeField] bool debugOn = false;
 
     public static readonly float SPAWN_X = 11.41f;
     public static readonly float SPAWN_Y_CACTUS = -1.522f;
-    public static readonly float SPAWN_Y_ROCK = -1.994309f;
+    public static readonly float SPAWN_Y_ROCK = -2.128f;
     public static readonly float SPAWN_Y_SNAKE = -1.64f;
+    public static readonly float SPAWN_Y_TALL_CACTUS = -1.37f;
+    public static readonly float SPAWN_Y_BALLOON = 1.83f;
 
     private static Stack<DesertObject> cactiStack = new Stack<DesertObject>();
     private static Stack<DesertObject> rockStack = new Stack<DesertObject>();
     private static Stack<DesertObject> snakeStack = new Stack<DesertObject>();
+    private static Stack<DesertObject> tallCactiStack = new Stack<DesertObject>();
+    private static Stack<DesertObject> balloonStack = new Stack<DesertObject>();
 
     private float desertTimer = 0f;
+    private float balloonTimer = 0f;
 
     private static readonly float INIT_DESERT_TIMER_CURR_MIN = 1.5f;
     private static readonly float INIT_DESERT_TIMER_CURR_MAX = 2f;
     private static readonly float INIT_DESERT_TIMER_CURR_DURATION = 2f;
     private static readonly float INIT_DESERT_OBJECT_SPEED = -5f;
+    private static readonly float BALLOON_TIMER_MIN = 3f;
+
+    private static readonly float[] SCORE_CHECKPOINTS = new float[] {
+        1000f, 3000f, 5000f
+    };
+    private static readonly int CHECKPOINTS = SCORE_CHECKPOINTS.Length;
 
     private float desertTimerCurrMin = INIT_DESERT_TIMER_CURR_MIN;
     private float desertTimerCurrMax = INIT_DESERT_TIMER_CURR_MAX;
     private float desertTimerCurrDuration = INIT_DESERT_TIMER_CURR_DURATION;
     public static float desertObjectSpeed = INIT_DESERT_OBJECT_SPEED;
 
-    private bool[] scoreCheckpoints = new bool[3];
+    private int currCheckpoint = -1;
+    private bool[] scoreCheckpointsMet = new bool[CHECKPOINTS];
 
     private bool lastSpawnWasDouble = false;
+    private bool spawnBreak = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < scoreCheckpoints.Length; i++)
+        currCheckpoint = -1;
+        for (int i = 0; i < scoreCheckpointsMet.Length; i++)
         {
-            scoreCheckpoints[i] = false;
+            scoreCheckpointsMet[i] = false;
         }
 
         foreach (GameObject obj in cactiList)
@@ -56,11 +72,23 @@ public class DesertGenerator : MonoBehaviour
         {
             snakeStack.Push(obj.GetComponent<DesertObject>());
         }
+
+        foreach (GameObject obj in tallCactiList)
+        {
+            tallCactiStack.Push(obj.GetComponent<DesertObject>());
+        }
+
+        foreach (GameObject obj in balloonList)
+        {
+            balloonStack.Push(obj.GetComponent<DesertObject>());
+        }
     }
 
     public void Restart()
     {
         desertTimer = 0f;
+        balloonTimer = 0f;
+        spawnBreak = false;
         desertTimerCurrMin = INIT_DESERT_TIMER_CURR_MIN;
         desertTimerCurrMax = INIT_DESERT_TIMER_CURR_MAX;
         desertTimerCurrDuration = INIT_DESERT_TIMER_CURR_DURATION;
@@ -68,9 +96,10 @@ public class DesertGenerator : MonoBehaviour
         //timer1kCheckpoint = false;
         //timer5kCheckpoint = false;
         //timer10kCheckpoint = false;
-        for (int i = 0; i < scoreCheckpoints.Length; i++)
+        currCheckpoint = -1;
+        for (int i = 0; i < scoreCheckpointsMet.Length; i++)
         {
-            scoreCheckpoints[i] = false;
+            scoreCheckpointsMet[i] = false;
         }
         lastSpawnWasDouble = false;
     }
@@ -92,14 +121,28 @@ public class DesertGenerator : MonoBehaviour
         {
             obj.SetActive(true);
         }
+
+        foreach (GameObject obj in tallCactiList)
+        {
+            obj.SetActive(true);
+        }
+
+        foreach (GameObject obj in balloonList)
+        {
+            obj.SetActive(true);
+        }
     }
 
     public void OnGenDisable()
     {
         desertTimer = 0f;
+        balloonTimer = 0f;
+        spawnBreak = false;
         cactiStack.Clear();
         rockStack.Clear();
         snakeStack.Clear();
+        tallCactiStack.Clear();
+        balloonStack.Clear();
 
         foreach (GameObject obj in cactiList)
         {
@@ -115,6 +158,16 @@ public class DesertGenerator : MonoBehaviour
         {
             obj.SetActive(false);
         }
+
+        foreach (GameObject obj in tallCactiList)
+        {
+            obj.SetActive(false);
+        }
+
+        foreach (GameObject obj in balloonList)
+        {
+            obj.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -126,12 +179,10 @@ public class DesertGenerator : MonoBehaviour
         }
 
         desertTimer += Time.deltaTime;
-        if (!GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameStateMachine.IsGameOver()
-            && transform.position.x >= -17.5)
+        if (!GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameStateMachine.IsGameOver())
         {
             float score = GameController.GetRoughScore();
-
-            if (desertTimer >= desertTimerCurrDuration)
+            if (desertTimer >= desertTimerCurrDuration && !spawnBreak)
             {
                 DesertObject obj = FindNextObstacle();
                 float y = SPAWN_Y_CACTUS;
@@ -144,6 +195,10 @@ public class DesertGenerator : MonoBehaviour
                 {
                     y = SPAWN_Y_SNAKE;
                 }
+                else if (obj.gameObject.tag.Equals("TallCactus"))
+                {
+                    y = SPAWN_Y_TALL_CACTUS;
+                }
 
                 obj.gameObject.transform.position = new Vector3(SPAWN_X, y, obj.gameObject.transform.position.z);
                 obj.Activate();
@@ -151,36 +206,51 @@ public class DesertGenerator : MonoBehaviour
                 desertTimer = 0f;
             }
 
-            if (!scoreCheckpoints[0] && score >= 1000)
+            balloonTimer += Time.deltaTime;
+            if (balloonTimer >= BALLOON_TIMER_MIN)
             {
-                desertTimerCurrMax -= 0.25f;
-                desertTimerCurrMin -= 0.25f;
-                desertObjectSpeed *= 1.2f;
-                GameController.MultiplyGameSpeed(1.1f);
-                scoreCheckpoints[0] = true;
+                int r = Random.Range(0, 5);
+                if (r == 0)
+                {
+                    DesertObject balloon = RetrieveBalloon();
+
+                    if (balloon != null)
+                    {
+                        balloon.gameObject.transform.position = new Vector3(SPAWN_X, SPAWN_Y_BALLOON,
+                            balloon.gameObject.transform.position.z);
+                        balloon.Activate();
+                    }
+                }
+                balloonTimer = 0f;
             }
-            else if (!scoreCheckpoints[1] && score >= 3000)
+
+            int nextCheck = currCheckpoint + 1;
+            if (nextCheck < SCORE_CHECKPOINTS.Length)
             {
-                desertTimerCurrMax -= 0.25f;
-                desertTimerCurrMin -= 0.15f;
-                desertObjectSpeed *= 1.2f;
-                GameController.MultiplyGameSpeed(1.1f);
-                scoreCheckpoints[1] = true;
-            }
-            else if (!scoreCheckpoints[2] && score >= 5000)
-            {
-                desertTimerCurrMax -= 0.25f;
-                desertTimerCurrMin -= 0.15f;
-                desertObjectSpeed *= 1.2f;
-                GameController.MultiplyGameSpeed(1.1f);
-                scoreCheckpoints[2] = true;
+                if (!scoreCheckpointsMet[nextCheck] && score >= SCORE_CHECKPOINTS[nextCheck])
+                {
+                    float gameSpeedMultiplier = 1.1f;
+
+                    desertTimerCurrMax -= nextCheck != 2 ? 0.25f : 0f;
+                    desertTimerCurrMin -= nextCheck == 0 ? 0.25f : 0.1f;
+                    desertObjectSpeed *= gameSpeedMultiplier;
+                    GameController.MultiplyGameSpeed(gameSpeedMultiplier);
+                    scoreCheckpointsMet[nextCheck] = true;
+                    currCheckpoint++;
+                    spawnBreak = false;
+                }
+                else if (!spawnBreak && !scoreCheckpointsMet[nextCheck]
+                    && score >= (SCORE_CHECKPOINTS[nextCheck] - (50 * (nextCheck + 1))))
+                {
+                    spawnBreak = true;
+                }
             }
         }
     }
 
     private float GetNextDesertTimerDuration(float score)
     {
-        if (scoreCheckpoints[1] && !lastSpawnWasDouble)
+        if (currCheckpoint == 1 && !lastSpawnWasDouble)
         {
             int doubleSpawnChance = 10;
             int r = Random.Range(0, 100);
@@ -188,7 +258,7 @@ public class DesertGenerator : MonoBehaviour
             if (r < doubleSpawnChance)
             {
                 lastSpawnWasDouble = true;
-                return !scoreCheckpoints[1] ? 0.3f : 0.2f;
+                return !scoreCheckpointsMet[1] ? 0.3f : 0.2f;
             }
         }
         else if (lastSpawnWasDouble)
@@ -204,9 +274,13 @@ public class DesertGenerator : MonoBehaviour
         int r = Random.Range(0, 100);
         DesertObject obj = null;
 
-        if (r < 50 && cactiStack.Count > 0)
+        if (r < 30 && cactiStack.Count > 0)
         {
             obj = cactiStack.Pop();
+        }
+        else if (r < 50 && tallCactiStack.Count > 0)
+        {
+            obj = tallCactiStack.Pop();
         }
         else if (r < 75 && rockStack.Count > 0)
         {
@@ -227,6 +301,15 @@ public class DesertGenerator : MonoBehaviour
         }
     }
 
+    private DesertObject RetrieveBalloon()
+    {
+        if (balloonStack.Count > 0)
+        {
+            return balloonStack.Pop();
+        }
+        return null;
+    }
+
     public static void ReturnToStack(DesertObject obj)
     {
         string tag = obj.gameObject.tag;
@@ -241,6 +324,14 @@ public class DesertGenerator : MonoBehaviour
         else if (tag.Equals("Snake") && !snakeStack.Contains(obj))
         {
             snakeStack.Push(obj);
+        }
+        else if (tag.Equals("TallCactus") && !tallCactiStack.Contains(obj))
+        {
+            tallCactiStack.Push(obj);
+        }
+        else if (tag.Equals("Balloon") && !balloonStack.Contains(obj))
+        {
+            balloonStack.Push(obj);
         }
     }
 }

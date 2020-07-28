@@ -8,6 +8,6 @@ mergeInto(LibraryManager.library, {
     else {
         console.log('Iframe does not exist when executing JS.');
     } */
-    window.parent.postMessage("Game Exit", "http://localhost:5000");
+    onDesertRunMessage("Game Exit");
   }
 });

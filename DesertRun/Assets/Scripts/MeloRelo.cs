@@ -8,8 +8,8 @@ public class MeloRelo : GameElement
 
     private static readonly float ENTER_VELOCITY_X = 1.5f;
     private static readonly float ENTER_FRAME_DURATION = 0.005f;
-    private static readonly float JUMP_PRESS_MAX_TIME = 0.2f;
-    private static readonly float JUMP_VELOCITY_MIN = 8f;
+    private static readonly float JUMP_PRESS_MAX_TIME = 0.3f;
+    private static readonly float JUMP_VELOCITY_MIN = 7f;
     private static readonly float GRAVITY_SCALE = 1.75f;
 
     private int currSpriteIndex = 0;
@@ -119,6 +119,7 @@ public class MeloRelo : GameElement
             else
             {
                 float axis = Input.GetAxis("Jump");
+
                 if (axis > 0 && jumpPressTimer < JUMP_PRESS_MAX_TIME && !dead)
                 {
                     float d = Time.deltaTime;
@@ -208,12 +209,12 @@ public class MeloRelo : GameElement
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!collision.transform.tag.Equals("Surface"))
+        if (!collision.transform.tag.Equals("Surface") && !collision.transform.tag.Equals("Balloon"))
         {
             rigidbodyComp.constraints = RigidbodyConstraints2D.None;
             GameController.SetGameOver();
         }
-        else if (jumpTimer > 0.01f)
+        else if (collision.transform.tag.Equals("Surface") && jumpTimer > 0f)
         {
             jumpTimer = 0f;
             jumping = false;

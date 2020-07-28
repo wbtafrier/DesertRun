@@ -11,6 +11,9 @@ TagManager:
   - Rock
   - Snake
   - Surface
+  - PauseButton
+  - TallCactus
+  - Balloon
   layers:
   - Default
   - TransparentFX

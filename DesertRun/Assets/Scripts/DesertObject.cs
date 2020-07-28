@@ -2,8 +2,10 @@
 
 public class DesertObject : GameElement
 {
+    public static readonly float STOP_X_POS = -17.5f;
+
     Rigidbody2D rigidbodyComp;
-    private bool activated = false;
+    protected bool activated = false;
 
     // Start is called before the first frame update
     public override void Start()
@@ -18,12 +20,12 @@ public class DesertObject : GameElement
     public override void Update()
     {
         base.Update();
-        if (activated && !GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameStateMachine.IsGameOver() && transform.position.x >= -17.5)
+        if (activated && !GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameStateMachine.IsGameOver() && transform.position.x >= STOP_X_POS)
         {
             transform.Translate(DesertGenerator.desertObjectSpeed * Time.deltaTime, 0f, 0f);
             //rigidbodyComp.velocity = new Vector2(DesertGenerator.desertObjectSpeed, 0f);
         }
-        else if (activated && (transform.position.x < -17.5 || GameController.IsRestarting() || GameStateMachine.IsGameOver()))
+        else if (activated && (transform.position.x < STOP_X_POS || GameController.IsRestarting() || GameStateMachine.IsGameOver()))
         {
             Deactivate();
         }
