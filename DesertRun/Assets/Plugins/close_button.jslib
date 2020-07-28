@@ -1,13 +1,11 @@
 mergeInto(LibraryManager.library, {
   QuitAnimation: function () {
-    /* var ifrm = document.getElementById('unityContainer');
-    if (ifrm !== null) {
-        console.log("POST: Game Exit");
-        ifrm.contentWindow.postMessage("Game Exit", "*");
+   window.addEventListener("message onmessage", function(event) {
+    if (event.origin === "http://localhost:5000" || event.origin === "https://melorelo-staging.herokuapp.com" || event.origin === "https://melorelo.com") {
+        if (event.data === "Game Open") {
+            // Call function to start the music and sound and any other proceduers necessary for when the game is back in display
+        }
     }
-    else {
-        console.log('Iframe does not exist when executing JS.');
-    } */
-    onDesertRunMessage("Game Exit");
+});
   }
 });
