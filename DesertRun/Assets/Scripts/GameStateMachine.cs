@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Runtime.InteropServices;
+using UnityEngine;
 
 public class GameStateMachine : MonoBehaviour
 {
+    private static bool gameLoaded = false;
+
     [SerializeField] GameObject musicManagerProp = default;
     [SerializeField] GameObject mainMenuControllerProp = default;
     [SerializeField] GameObject settingsControllerProp = default;
@@ -25,6 +28,10 @@ public class GameStateMachine : MonoBehaviour
     private static GameState currentState = MAIN_MENU;
 
     static AudioSource music;
+
+#if UNITY_WEBGL
+    [DllImport("__Internal")] private static extern void GameLoaded();
+#endif
 
     public class GameState
     {
@@ -64,6 +71,17 @@ public class GameStateMachine : MonoBehaviour
         }
 
         music = musicManager.GetComponent<AudioSource>();
+
+
+        if (!gameLoaded)
+        {
+#if UNITY_WEBGL
+            GameLoaded();
+#elif UNITY_EDITOR
+            Debug.Log("GAME LOADED");
+#endif
+            gameLoaded = true;
+        }
     }
 
     // Update is called once per frame

@@ -1612,8 +1612,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 260.3, y: 207.9}
-  m_SizeDelta: {x: 172.90002, y: 25}
+  m_AnchoredPosition: {x: 223.67, y: 207.9}
+  m_SizeDelta: {x: 246.16034, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &521257506
 MonoBehaviour:
@@ -1634,7 +1634,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: V0.0.0
+  m_text: V0.0.0 BETA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 643ef2148bb8475438d86dc1aeff3a58, type: 2}
   m_sharedMaterial: {fileID: -2307114532384206371, guid: 643ef2148bb8475438d86dc1aeff3a58,
@@ -1704,10 +1704,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 521257506}
-    characterCount: 6
+    characterCount: 11
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 3
+    spaceCount: 1
+    wordCount: 4
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -4201,8 +4201,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 258, y: 211.79994}
-  m_SizeDelta: {x: 172.90002, y: 25}
+  m_AnchoredPosition: {x: 220.4, y: 211.79994}
+  m_SizeDelta: {x: 246.16034, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1226950536
 MonoBehaviour:
@@ -4223,7 +4223,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: V0.0.0
+  m_text: V0.0.0 BETA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 643ef2148bb8475438d86dc1aeff3a58, type: 2}
   m_sharedMaterial: {fileID: -2307114532384206371, guid: 643ef2148bb8475438d86dc1aeff3a58,
@@ -4293,10 +4293,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1226950536}
-    characterCount: 6
+    characterCount: 11
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 3
+    spaceCount: 1
+    wordCount: 4
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -6825,7 +6825,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 1, g: 0.55033296, b: 0.4764151, a: 1}
     m_PressedColor: {r: 1, g: 0, b: 0, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
