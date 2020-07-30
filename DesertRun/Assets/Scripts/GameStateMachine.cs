@@ -2,6 +2,7 @@
 
 public class GameStateMachine : MonoBehaviour
 {
+    [SerializeField] GameObject musicManagerProp = default;
     [SerializeField] GameObject mainMenuControllerProp = default;
     [SerializeField] GameObject settingsControllerProp = default;
     [SerializeField] GameObject gameControllerProp = default;
@@ -14,6 +15,7 @@ public class GameStateMachine : MonoBehaviour
     public static readonly GameState PAUSE = new GameState(3, "pause");
     public static readonly GameState GAME_OVER = new GameState(4, "game_over");
 
+    static GameObject musicManager;
     static GameObject mainMenuController;
     static GameObject settingsController;
     static GameObject gameController;
@@ -21,6 +23,8 @@ public class GameStateMachine : MonoBehaviour
     static GameObject gameOverController;
 
     private static GameState currentState = MAIN_MENU;
+
+    static AudioSource music;
 
     public class GameState
     {
@@ -47,6 +51,7 @@ public class GameStateMachine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        musicManager = musicManagerProp;
         mainMenuController = mainMenuControllerProp;
         settingsController = settingsControllerProp;
         gameController = gameControllerProp;
@@ -57,12 +62,30 @@ public class GameStateMachine : MonoBehaviour
         {
             mainMenuController.SetActive(true);
         }
+
+        music = musicManager.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    public static void EnableSounds()
+    {
+        if (!music.isPlaying)
+        {
+            music.Play();
+        }
+    }
+
+    public static void DisableSounds()
+    {
+        if (music.isPlaying)
+        {
+            music.Stop();
+        }
     }
 
     public static void StartGame()
@@ -193,7 +216,8 @@ public class GameStateMachine : MonoBehaviour
         }
         else
         {
-            Debug.Log("WARNING: There was an attempt to return to the main menu from outside of the GAME_OVER or PAUSE State.");
+            Debug.Log("WARNING: There was an attempt to return to the main menu from outside of the GAME_OVER " +
+                "or PAUSE State.");
         }
     }
 

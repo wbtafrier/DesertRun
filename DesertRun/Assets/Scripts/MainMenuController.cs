@@ -81,13 +81,17 @@ public class MainMenuController : MonoBehaviour, IStateController
         versionText = versionTextObj.GetComponent<TextMeshProUGUI>();
         versionTextBg = versionTextBgObj.GetComponent<TextMeshProUGUI>();
 
-        string v = "V" + Application.version;
+        string v = "V" + Application.version + " BETA";
         versionText.text = v;
         versionTextBg.text = v;
         sign = signObj.GetComponent<MainMenuSign>();
         alien1 = alien1Obj.GetComponent<MainMenuAlien>();
         alien2 = alien2Obj.GetComponent<MainMenuAlien>();
         cactus = cactusObj.GetComponent<MenuCactus>();
+
+#if UNITY_EDITOR
+        GameStateMachine.EnableSounds();
+#endif
     }
 
     public void OnStateEnable()
@@ -152,6 +156,8 @@ public class MainMenuController : MonoBehaviour, IStateController
 
     public void Quit()
     {
+
+        GameStateMachine.DisableSounds();
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
