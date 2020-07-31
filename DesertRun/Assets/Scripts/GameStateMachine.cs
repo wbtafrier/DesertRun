@@ -1,9 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameStateMachine : MonoBehaviour
 {
     private static bool gameLoaded = false;
+    private static float gameVolumeBeforeMute = 1f;
 
     [SerializeField] GameObject musicManagerProp = default;
     [SerializeField] GameObject mainMenuControllerProp = default;
@@ -11,6 +13,7 @@ public class GameStateMachine : MonoBehaviour
     [SerializeField] GameObject gameControllerProp = default;
     [SerializeField] GameObject pauseControllerProp = default;
     [SerializeField] GameObject gameOverControllerProp = default;
+    [SerializeField] GameObject muteButtonProp = default;
 
     public static readonly GameState MAIN_MENU = new GameState(0, "main_menu");
     public static readonly GameState SETTINGS = new GameState(1, "settings");
@@ -24,10 +27,15 @@ public class GameStateMachine : MonoBehaviour
     static GameObject gameController;
     static GameObject pauseController;
     static GameObject gameOverController;
+    static GameObject muteButtonObj;
 
     private static GameState currentState = MAIN_MENU;
 
+    static Button muteButton;
     static AudioSource music;
+
+    static Sprite volumeOn;
+    static Sprite volumeOff;
 
 #if UNITY_WEBGL
     [DllImport("__Internal")] private static extern void GameLoaded();
@@ -64,11 +72,17 @@ public class GameStateMachine : MonoBehaviour
         gameController = gameControllerProp;
         pauseController = pauseControllerProp;
         gameOverController = gameOverControllerProp;
+        muteButtonObj = muteButtonProp;
 
         if (!mainMenuController.activeSelf)
         {
             mainMenuController.SetActive(true);
         }
+
+        gameVolumeBeforeMute = AudioListener.volume;
+        muteButton = muteButtonObj.GetComponent<Button>();
+        volumeOn = muteButton.image.sprite;
+        volumeOff = Resources.Load<Sprite>("Sprites/volumeOff");
 
         music = musicManager.GetComponent<AudioSource>();
 
@@ -126,12 +140,11 @@ public class GameStateMachine : MonoBehaviour
     {
         if (currentState.GetId() == MAIN_MENU.GetId())
         {
-            Debug.Log("DEBUG: Settings Menu has not yet been implemented yet.");
-            //currentState = SETTINGS;
-            //mainMenuController.GetComponent<MainMenuController>().OnStateDisable();
-            //mainMenuController.SetActive(false);
-            //settingsController.SetActive(true);
-            //settingsController.GetComponent<SettingsController>().OnStateEnable();
+            currentState = SETTINGS;
+            mainMenuController.GetComponent<MainMenuController>().OnStateDisable();
+            mainMenuController.SetActive(false);
+            settingsController.SetActive(true);
+            settingsController.GetComponent<SettingsController>().OnStateEnable();
         }
         else
         {
@@ -232,11 +245,66 @@ public class GameStateMachine : MonoBehaviour
             mainMenuController.SetActive(true);
             mainMenuController.GetComponent<MainMenuController>().OnStateEnable();
         }
+        else if (currentState.GetId() == SETTINGS.GetId())
+        {
+            currentState = MAIN_MENU;
+            settingsController.GetComponent<SettingsController>().OnStateDisable();
+            settingsController.SetActive(false);
+            mainMenuController.SetActive(true);
+            mainMenuController.GetComponent<MainMenuController>().OnStateEnable();
+        }
         else
         {
-            Debug.Log("WARNING: There was an attempt to return to the main menu from outside of the GAME_OVER " +
-                "or PAUSE State.");
+            Debug.Log("WARNING: There was an attempt to return to the main menu from outside of the GAME_OVER, " +
+                "PAUSE, or SETTINGS States.");
         }
+    }
+
+    public void MuteButtonClick()
+    {
+        string spriteName = muteButton.image.sprite.name;
+        if (spriteName.Equals(volumeOn.name))
+        {
+            muteButton.image.sprite = volumeOff;
+            gameVolumeBeforeMute = AudioListener.volume;
+            AudioListener.volume = 0;
+        }
+        else
+        {
+            muteButton.image.sprite = volumeOn;
+            AudioListener.volume = gameVolumeBeforeMute;
+        }
+
+        if (currentState.GetId() == SETTINGS.GetId())
+        {
+            SettingsController.UpdateVolume();
+        }
+    }
+
+    public static void UpdateMuteButton()
+    {
+        string spriteName = muteButton.image.sprite.name;
+        float volume = AudioListener.volume;
+        Image muteButtonImg = muteButton.image;
+
+        if (volume == 0f && !spriteName.Equals(volumeOff.name))
+        {
+            muteButtonImg.sprite = volumeOff;
+        }
+        else if (volume > 0f && !spriteName.Equals(volumeOn.name))
+        {
+            muteButtonImg.sprite = volumeOn;
+        }    
+    }
+
+    public static float GetMusicVolume()
+    {
+        return music.volume;
+    }
+
+    public static void SetMusicVolume(float volume)
+    {
+        music.volume = volume;
     }
 
     public static bool IsGamePaused()
