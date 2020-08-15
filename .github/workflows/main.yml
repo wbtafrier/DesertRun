@@ -24,7 +24,7 @@ jobs:
         projectPath:
           - DesertRun
         unityVersion:
-          - 2019.4.7f1
+          - 2019.4.8f1
         #          - 2019.3.0f1 # requires different license file/method
         targetPlatform:
           - WebGL # WebGL.
