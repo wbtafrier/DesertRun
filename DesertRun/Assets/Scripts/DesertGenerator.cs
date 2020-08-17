@@ -138,6 +138,32 @@ public class DesertGenerator : MonoBehaviour
         desertTimer = 0f;
         balloonTimer = 0f;
         spawnBreak = false;
+        foreach (GameObject obj in cactiList)
+        {
+            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+        }
+
+        foreach (GameObject obj in rockList)
+        {
+            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+        }
+
+        foreach (GameObject obj in snakeList)
+        {
+            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+        }
+
+        foreach (GameObject obj in tallCactiList)
+        {
+            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+        }
+
+        foreach (GameObject obj in balloonList)
+        {
+            Balloon b = obj.GetComponent<Balloon>();
+            b.ReturnToInitialPosition();
+            b.ResetSparkles();
+        }
         cactiStack.Clear();
         rockStack.Clear();
         snakeStack.Clear();

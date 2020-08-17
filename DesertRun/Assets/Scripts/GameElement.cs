@@ -20,15 +20,20 @@ public abstract class GameElement : MonoBehaviour
         if (GameController.IsRestarting())
         {
             Restart();
-            if (!transform.position.Equals(initialPosition))
-            {
-                transform.position = initialPosition;
-            }
+            ReturnToInitialPosition();
         }
     }
 
     public Vector3 GetInitialPosition()
     {
         return initialPosition;
+    }
+
+    public void ReturnToInitialPosition()
+    {
+        if (!transform.position.Equals(initialPosition))
+        {
+            transform.position = initialPosition;
+        }
     }
 }

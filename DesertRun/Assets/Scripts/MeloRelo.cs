@@ -5,12 +5,17 @@ public class MeloRelo : GameElement
 {
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigidbodyComp;
+    private AudioSource deathSfxSource;
+    private AudioSource jumpSfxSource;
+    private AudioSource runningSfxSource;
+    private AudioSource powerUpSfxSource;
 
     private static readonly float ENTER_VELOCITY_X = 1.5f;
     private static readonly float ENTER_FRAME_DURATION = 0.005f;
     private static readonly float JUMP_PRESS_MAX_TIME = 0.3f;
     private static readonly float JUMP_VELOCITY_MIN = 7f;
     private static readonly float GRAVITY_SCALE = 1.75f;
+    private static readonly float RUNNING_SFX_BREAK = 0.03f;
 
     private int currSpriteIndex = 0;
     private float spriteChangeTimer = 0f;
@@ -24,6 +29,7 @@ public class MeloRelo : GameElement
     //private float jumpVelocity = 0.1f;
     private float jumpTimer = 0f;
     private float jumpPressTimer = 0f;
+    private float runSfxTimer = 0f;
     //private float jumpDuration = 1f;
     //private float jumpHeight = 1.8f;
     //private float initHeight = 0f;
@@ -39,6 +45,28 @@ public class MeloRelo : GameElement
         base.Start();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rigidbodyComp = GetComponent<Rigidbody2D>();
+        AudioSource[] sfxList = GetComponents<AudioSource>();
+
+        foreach (AudioSource sfx in sfxList)
+        {
+            string sfxName = sfx.clip.name;
+            if (sfxName.Equals("DEATH"))
+            {
+                deathSfxSource = sfx;
+            }
+            else if (sfxName.Equals("JUMP"))
+            {
+                jumpSfxSource = sfx;
+            }
+            else if (sfxName.Equals("RUNNING"))
+            {
+                runningSfxSource = sfx;
+            }
+            else if (sfxName.Equals("POWER UP"))
+            {
+                powerUpSfxSource = sfx;
+            }
+        }
 
         if (spriteList.Count == 0)
         {
@@ -147,13 +175,14 @@ public class MeloRelo : GameElement
 
     void Jump(float axis, float dTime)
     {
-        //if (rigidbodyComp.velocity.y <= 0f)
-        //{
-        jumping = true;
+        if (!jumping)
+        {
+            jumpSfxSource.Play();
+            jumping = true;
+        }
 
         float multiplier = (1f + (1.5f * dTime)) * axis;
         rigidbodyComp.velocity = new Vector2(0f, JUMP_VELOCITY_MIN * multiplier);
-        //}
     }
 
     void Animate()
@@ -187,6 +216,7 @@ public class MeloRelo : GameElement
 
     public void Die()
     {
+        deathSfxSource.Play();
         dead = true;
         jumpTimer = 0f;
         jumping = false;
@@ -214,10 +244,23 @@ public class MeloRelo : GameElement
             rigidbodyComp.constraints = RigidbodyConstraints2D.None;
             GameController.SetGameOver();
         }
-        else if (collision.transform.tag.Equals("Surface") && jumpTimer > 0f)
+        else if (collision.transform.tag.Equals("Surface"))
         {
-            jumpTimer = 0f;
-            jumping = false;
+            if (jumpTimer > 0f)
+            {
+                jumpTimer = 0f;
+                jumping = false;
+            }
+
+            if (!dead)
+            {
+                if (runSfxTimer > RUNNING_SFX_BREAK)
+                {
+                    runSfxTimer = 0f;
+                    runningSfxSource.Play();
+                }
+                runSfxTimer += Time.deltaTime;
+            }
         }
     }
 }

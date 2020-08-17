@@ -4,9 +4,6 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour, IStateController
 {
-    //[SerializeField] GameObject clouds1 = default;
-    //[SerializeField] GameObject clouds2 = default;
-
     [SerializeField] GameObject desertGeneratorProp = default;
     [SerializeField] GameObject scoreProp = default;
     [SerializeField] GameObject scoreBgProp = default;
@@ -24,7 +21,6 @@ public class GameController : MonoBehaviour, IStateController
     static readonly float TEXT_SPEED_EFFECT_DURATION = 3f;
     static readonly string SESSION_HIGH_SCORE_TEXT = "YOUR HIGH SCORE: ";
 
-    static Camera mainCamera;
     static float roughScore = 0f;
     static int score = 0;
     static float restartTimer = 0f;
@@ -62,7 +58,6 @@ public class GameController : MonoBehaviour, IStateController
     // Start is called before the first frame update
     void Start()
     {
-        mainCamera = Camera.main;
         desertGeneratorObj = desertGeneratorProp;
         scoreTextObj = scoreProp;
         scoreBgTextObj = scoreBgProp;

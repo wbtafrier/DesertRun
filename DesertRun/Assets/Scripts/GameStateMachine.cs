@@ -33,6 +33,8 @@ public class GameStateMachine : MonoBehaviour
 
     static Button muteButton;
     static AudioSource music;
+    static AudioSource click1Sfx;
+    static AudioSource click2Sfx;
 
     static Sprite volumeOn;
     static Sprite volumeOff;
@@ -86,6 +88,21 @@ public class GameStateMachine : MonoBehaviour
 
         music = musicManager.GetComponent<AudioSource>();
 
+        AudioSource[] buttonSfxList = GetComponents<AudioSource>();
+        foreach (AudioSource sfx in buttonSfxList)
+        {
+            string sfxName = sfx.clip.name;
+
+            if (sfxName.Equals("CLICK"))
+            {
+                click1Sfx = sfx;
+            }
+            else if (sfxName.Equals("CLICK 2"))
+            {
+                click2Sfx = sfx;
+            }
+        }
+
 
         if (!gameLoaded)
         {
@@ -118,6 +135,16 @@ public class GameStateMachine : MonoBehaviour
         {
             music.Stop();
         }
+    }
+
+    public void PlayClick1Sfx()
+    {
+        click1Sfx.Play();
+    }
+
+    public void PlayClick2Sfx()
+    {
+        click2Sfx.Play();
     }
 
     public static void StartGame()

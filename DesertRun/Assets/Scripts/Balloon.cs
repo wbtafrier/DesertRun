@@ -12,6 +12,7 @@ public class Balloon : DesertObject
     private GameObject sparkleObj;
 
     private ParticleSystem sparkles;
+    private AudioSource dingSfx;
 
     public override void Restart()
     {
@@ -35,6 +36,8 @@ public class Balloon : DesertObject
 
         sparkleObj = sparkleProp;
         sparkles = sparkleObj.GetComponent<ParticleSystem>();
+
+        dingSfx = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -79,10 +82,17 @@ public class Balloon : DesertObject
         }
     }
 
+    public void ResetSparkles()
+    {
+        sparkleObj.transform.position = transform.position;
+        sparkles.Stop();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag.Equals("Player"))
         {
+            dingSfx.Play();
             sparkles.Stop();
             transform.position = GetInitialPosition();
             Deactivate();
