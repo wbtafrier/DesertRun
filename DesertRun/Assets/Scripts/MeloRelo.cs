@@ -67,6 +67,8 @@ public class MeloRelo : GameElement
                 powerUpSfxSource = sfx;
             }
         }
+        
+        SetPlayerSfxVolume(GameStateMachine.GetSoundVolume());
 
         if (spriteList.Count == 0)
         {
@@ -88,6 +90,7 @@ public class MeloRelo : GameElement
 
     public override void Restart()
     {
+        SetPlayerSfxVolume(GameStateMachine.GetSoundVolume());
         currSpriteIndex = 0;
         foreach (PolygonCollider2D col in colliderList)
         {
@@ -235,6 +238,19 @@ public class MeloRelo : GameElement
     private PolygonCollider2D GetCurrentCollider()
     {
         return colliderList[currSpriteIndex];
+    }
+
+    public void SetPlayerSfxVolume(float vol)
+    {
+        if (!deathSfxSource || !jumpSfxSource || !runningSfxSource || !powerUpSfxSource)
+        {
+            return;
+        }
+
+        deathSfxSource.volume = vol;
+        jumpSfxSource.volume = vol;
+        runningSfxSource.volume = vol;
+        powerUpSfxSource.volume = vol;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

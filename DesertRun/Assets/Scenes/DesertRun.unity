@@ -7949,7 +7949,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1270666385}
-        m_MethodName: SliderChange
+        m_MethodName: SoundVolumeSliderChange
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

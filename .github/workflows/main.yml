@@ -72,9 +72,17 @@ jobs:
         working-directory: build
       #- name: Replace index.html
       #  run: sed -i "7i\    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>" ./public/index.html; cat ./public/index.html
-      - name: Deploy to Firebase
+      - name: Deploy to Firebase melorelo
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_ID: melorelo
+      - name: Deploy to Firebase DesertRun
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_ID: desert-run-24a8b

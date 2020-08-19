@@ -16,6 +16,7 @@ public class Balloon : DesertObject
 
     public override void Restart()
     {
+        SetDingVolume(GameStateMachine.GetSoundVolume());
         down = false;
         targetPosY = upPosY;
     }
@@ -38,6 +39,7 @@ public class Balloon : DesertObject
         sparkles = sparkleObj.GetComponent<ParticleSystem>();
 
         dingSfx = GetComponent<AudioSource>();
+        SetDingVolume(GameStateMachine.GetSoundVolume());
     }
 
     // Update is called once per frame
@@ -80,6 +82,11 @@ public class Balloon : DesertObject
             float z = sparkleObj.transform.position.z;
             sparkleObj.transform.position = new Vector3(x, y, z);
         }
+    }
+    
+    public void SetDingVolume(float vol)
+    {
+        dingSfx.volume = vol;
     }
 
     public void ResetSparkles()

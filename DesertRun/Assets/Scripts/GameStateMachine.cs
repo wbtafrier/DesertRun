@@ -39,6 +39,8 @@ public class GameStateMachine : MonoBehaviour
     static Sprite volumeOn;
     static Sprite volumeOff;
 
+    private static float soundVolume = 1.0f;
+
 #if UNITY_WEBGL
     [DllImport("__Internal")] private static extern void GameLoaded();
 #endif
@@ -145,6 +147,18 @@ public class GameStateMachine : MonoBehaviour
     public void PlayClick2Sfx()
     {
         click2Sfx.Play();
+    }
+
+    public static void SetSoundVolume(float vol)
+    {
+        click1Sfx.volume = vol;
+        click2Sfx.volume = vol;
+        soundVolume = vol;
+    }
+
+    public static float GetSoundVolume()
+    {
+        return soundVolume;
     }
 
     public static void StartGame()

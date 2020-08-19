@@ -65,6 +65,7 @@ public class SettingsController : MonoBehaviour, IStateController
         musicVolumeSlider = musicVolumeSliderObj.GetComponent<Slider>();
         musicVolumeSlider.value = GameStateMachine.GetMusicVolume();
         soundsVolumeSlider = soundsVolumeSliderObj.GetComponent<Slider>();
+        soundsVolumeSlider.value = GameStateMachine.GetSoundVolume();
     }
 
     public void OnStateEnable()
@@ -79,11 +80,6 @@ public class SettingsController : MonoBehaviour, IStateController
         volumeTextObj.SetActive(true);
         volumeTextBgObj.SetActive(true);
         volumeSliderObj.SetActive(true);
-        foreach (Transform c in volumeSliderObj.transform)
-        {
-            c.gameObject.SetActive(true);
-        }
-
         musicVolumeTextObj.SetActive(true);
         musicVolumeTextBgObj.SetActive(true);
         musicVolumeSliderObj.SetActive(true);
@@ -131,6 +127,11 @@ public class SettingsController : MonoBehaviour, IStateController
     public void MusicVolumeSliderChange()
     {
         GameStateMachine.SetMusicVolume(musicVolumeSlider.value);
+    }
+
+    public void SoundVolumeSliderChange()
+    {
+        GameStateMachine.SetSoundVolume(soundsVolumeSlider.value);
     }
 
     public void SaveAndClose()
