@@ -6935,8 +6935,6 @@ MonoBehaviour:
   pausedTextBgProp: {fileID: 1116007132}
   resumeButtonProp: {fileID: 1304628271}
   resumeButtonBgProp: {fileID: 355809323}
-  restartButtonProp: {fileID: 195543646}
-  restartButtonBgProp: {fileID: 1354712288}
   exitButtonProp: {fileID: 2062733557}
   exitButtonBgProp: {fileID: 1377839378}
 --- !u!1 &1133566093
@@ -11691,7 +11689,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
