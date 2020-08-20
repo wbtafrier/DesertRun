@@ -41,8 +41,9 @@ public class GameStateMachine : MonoBehaviour
 
     private static float soundVolume = 1.0f;
 
-#if UNITY_WEBGL
-    [DllImport("__Internal")] private static extern void GameLoaded();
+#if !UNITY_EDITOR && UNITY_WEBGL
+    [DllImport("__Internal")]
+    private static extern void GameLoaded();
 #endif
 
     public class GameState
@@ -108,7 +109,7 @@ public class GameStateMachine : MonoBehaviour
 
         if (!gameLoaded)
         {
-#if UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL
             GameLoaded();
 #elif UNITY_EDITOR
             Debug.Log("GAME LOADED");

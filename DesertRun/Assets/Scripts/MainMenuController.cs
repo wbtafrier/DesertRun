@@ -44,8 +44,9 @@ public class MainMenuController : MonoBehaviour, IStateController
 
     private bool transitioning = false;
 
-#if UNITY_WEBGL
-    [DllImport("__Internal")] private static extern void QuitAnimation();
+#if !UNITY_EDITOR && UNITY_WEBGL
+    [DllImport("__Internal")]
+    private static extern void QuitAnimation();
 #endif
 
     // Start is called before the first frame update
@@ -167,7 +168,7 @@ public class MainMenuController : MonoBehaviour, IStateController
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
 
-#if UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL
         QuitAnimation();
 #endif
 

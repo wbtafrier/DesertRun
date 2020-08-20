@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Balloon : DesertObject
 {
-    [SerializeField] GameObject sparkleProp;
+    [SerializeField] GameObject sparkleProp = default;
 
     private static readonly float BALLOON_Y_SPEED = 0.4f;
     private bool down = false;
@@ -16,6 +16,7 @@ public class Balloon : DesertObject
 
     public override void Restart()
     {
+        base.Restart();
         SetDingVolume(GameStateMachine.GetSoundVolume());
         down = false;
         targetPosY = upPosY;
@@ -46,6 +47,12 @@ public class Balloon : DesertObject
     public override void Update()
     {
         base.Update();
+
+        float pitch = GameController.GetBalloonPitch();
+        if (pitch != dingSfx.pitch)
+        {
+            dingSfx.pitch = pitch;
+        }
 
         Vector3 pos = transform.position;
         float yPos = pos.y;
@@ -84,9 +91,10 @@ public class Balloon : DesertObject
         }
     }
     
-    public void SetDingVolume(float vol)
+    private void SetDingVolume(float vol)
     {
         dingSfx.volume = vol;
+        dingSfx.pitch = 1f;
     }
 
     public void ResetSparkles()
@@ -99,7 +107,11 @@ public class Balloon : DesertObject
     {
         if (collision.gameObject.tag.Equals("Player"))
         {
-            dingSfx.Play();
+            if (!GameController.IsReloInvincible())
+            {
+                dingSfx.Play();
+                GameController.AddCoin();
+            }
             sparkles.Stop();
             transform.position = GetInitialPosition();
             Deactivate();
