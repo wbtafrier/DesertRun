@@ -42,6 +42,7 @@ public class DesertGenerator : MonoBehaviour
     private float desertTimerCurrMax = INIT_DESERT_TIMER_CURR_MAX;
     private float desertTimerCurrDuration = INIT_DESERT_TIMER_CURR_DURATION;
     public static float desertObjectSpeed = INIT_DESERT_OBJECT_SPEED;
+    private static float balloonTimerMin = BALLOON_TIMER_MIN;
 
     private int currCheckpoint = -1;
     private bool[] scoreCheckpointsMet = new bool[CHECKPOINTS];
@@ -204,6 +205,11 @@ public class DesertGenerator : MonoBehaviour
             return;
         }
 
+        if (GameController.IsBalloonDebugOn() && balloonTimerMin == BALLOON_TIMER_MIN)
+        {
+            balloonTimerMin = 0.1f;
+        }
+
         desertTimer += Time.deltaTime;
         if (!GameController.IsRestarting() && !GameController.IsPlayerEnteringScene() && !GameStateMachine.IsGameOver())
         {
@@ -233,9 +239,15 @@ public class DesertGenerator : MonoBehaviour
             }
 
             balloonTimer += Time.deltaTime;
-            if (balloonTimer >= BALLOON_TIMER_MIN)
+            if (balloonTimer >= balloonTimerMin && !GameController.IsReloInvincible())
             {
-                int r = Random.Range(0, 5);
+                int r = 0;
+                if (!GameController.IsBalloonDebugOn())
+                {
+                    r = Random.Range(0, 3);
+                    
+                }
+
                 if (r == 0)
                 {
                     DesertObject balloon = RetrieveBalloon();

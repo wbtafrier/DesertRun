@@ -47,6 +47,12 @@ public class Balloon : DesertObject
     {
         base.Update();
 
+        float pitch = GameController.GetBalloonPitch();
+        if (pitch != dingSfx.pitch)
+        {
+            dingSfx.pitch = pitch;
+        }
+
         Vector3 pos = transform.position;
         float yPos = pos.y;
         if (down && yPos == downPosY)
@@ -84,9 +90,10 @@ public class Balloon : DesertObject
         }
     }
     
-    public void SetDingVolume(float vol)
+    private void SetDingVolume(float vol)
     {
         dingSfx.volume = vol;
+        dingSfx.pitch = 1f;
     }
 
     public void ResetSparkles()
@@ -99,7 +106,11 @@ public class Balloon : DesertObject
     {
         if (collision.gameObject.tag.Equals("Player"))
         {
-            dingSfx.Play();
+            if (!GameController.IsReloInvincible())
+            {
+                dingSfx.Play();
+                GameController.AddCoin();
+            }
             sparkles.Stop();
             transform.position = GetInitialPosition();
             Deactivate();

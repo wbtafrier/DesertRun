@@ -16,6 +16,7 @@ public class MeloRelo : GameElement
     private static readonly float JUMP_VELOCITY_MIN = 7f;
     private static readonly float GRAVITY_SCALE = 1.75f;
     private static readonly float RUNNING_SFX_BREAK = 0.03f;
+    private static readonly float INVINCIBILITY_MAX = 8f;
 
     private int currSpriteIndex = 0;
     private float spriteChangeTimer = 0f;
@@ -33,6 +34,9 @@ public class MeloRelo : GameElement
     //private float jumpDuration = 1f;
     //private float jumpHeight = 1.8f;
     //private float initHeight = 0f;
+
+    private bool invincible = false;
+    private float invincibleTimer = 0f;
 
     private bool dead = false;
 
@@ -170,6 +174,21 @@ public class MeloRelo : GameElement
                 {
                     jumpTimer += Time.deltaTime;
                 }
+
+                if (!dead && invincible)
+                {
+                    invincibleTimer += Time.deltaTime;
+                    if (invincibleTimer >= (INVINCIBILITY_MAX - (INVINCIBILITY_MAX * 0.25f)))
+                    {
+                        GameController.WarnPowerUpExpiring();
+                    }
+                    if (invincibleTimer > INVINCIBILITY_MAX)
+                    {
+                        invincible = false;
+                        invincibleTimer = 0f;
+                        GameController.ResetCoins(false);
+                    }
+                }
             }
         }
 
@@ -217,6 +236,20 @@ public class MeloRelo : GameElement
         return enteringFrame;
     }
 
+    public void PowerUpInvincible()
+    {
+        if (!dead)
+        {
+            powerUpSfxSource.Play();
+            invincible = true;
+        }
+    }
+
+    public bool IsInvincible()
+    {
+        return invincible;
+    }
+
     public void Die()
     {
         deathSfxSource.Play();
@@ -249,7 +282,7 @@ public class MeloRelo : GameElement
 
         deathSfxSource.volume = vol;
         jumpSfxSource.volume = vol;
-        runningSfxSource.volume = vol;
+        runningSfxSource.volume = vol * 0.5f;
         powerUpSfxSource.volume = vol;
     }
 
@@ -257,8 +290,15 @@ public class MeloRelo : GameElement
     {
         if (!collision.transform.tag.Equals("Surface") && !collision.transform.tag.Equals("Balloon"))
         {
-            rigidbodyComp.constraints = RigidbodyConstraints2D.None;
-            GameController.SetGameOver();
+            if (!invincible)
+            {
+                rigidbodyComp.constraints = RigidbodyConstraints2D.None;
+                GameController.SetGameOver();
+            }
+            else
+            {
+                //have fun with DOs.
+            }
         }
         else if (collision.transform.tag.Equals("Surface"))
         {

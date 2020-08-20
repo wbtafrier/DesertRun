@@ -1,6 +1,8 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour, IStateController
 {
@@ -15,11 +17,16 @@ public class GameController : MonoBehaviour, IStateController
     [SerializeField] GameObject sessionHighScoreTextProp = default;
     [SerializeField] GameObject sandProp = default;
     [SerializeField] GameObject playerProp = default;
+    [SerializeField] GameObject[] coinProps = default;
+    [SerializeField] Color coinPowerUpColorProp = default;
+
+    [SerializeField] bool balloonDebugProp = false;
 
     static readonly float ROUGH_SCORE_PER_SEC = 50f;
     static readonly float RESTART_DURATION = 1.25f;
     static readonly float TEXT_SPEED_EFFECT_DURATION = 3f;
     static readonly string SESSION_HIGH_SCORE_TEXT = "YOUR HIGH SCORE: ";
+    static readonly float BALLOON_PITCH_INCREMENT = 0.05f;
 
     static float roughScore = 0f;
     static int score = 0;
@@ -29,6 +36,10 @@ public class GameController : MonoBehaviour, IStateController
     static float textSpeedEffectTimer = 0f;
     static int sessionHighScore = 0;
     static bool newHighScore = false;
+    static int totalCoinsCollected = 0;
+    static float balloonPitch = 1f;
+    static float invColorChangeTimer = 0f;
+    static bool powerUpWarning = false;
 
     static GameObject desertGeneratorObj;
     static GameObject scoreTextObj;
@@ -41,6 +52,8 @@ public class GameController : MonoBehaviour, IStateController
     static GameObject sessionHighScoreTextObj;
     static GameObject sand;
     static GameObject meloReloObj;
+    static GameObject[] coinObjs;
+    static int currentCoin = 0;
 
     static DesertGenerator desertGenerator;
     static TextMeshProUGUI scoreText;
@@ -51,9 +64,14 @@ public class GameController : MonoBehaviour, IStateController
     static TextMeshProUGUI sessionHighScoreText;
     static Button pauseButton;
     static MeloRelo meloReloComp;
+    static Image[] coinImgs;
 
     static Color scoreTextDefaultColor;
     static Color sessionHighScoreTextDefaultColor;
+    static Color coinDefaultColor;
+    static Color coinPowerUpColor;
+
+    static bool balloonDebug = false;
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +87,7 @@ public class GameController : MonoBehaviour, IStateController
         pauseButtonBgObj = pauseButtonBgProp;
         sand = sandProp;
         meloReloObj = playerProp;
+        coinObjs = coinProps;
 
         desertGenerator = desertGeneratorObj.GetComponent<DesertGenerator>();
         scoreText = scoreTextObj.GetComponent<TextMeshProUGUI>();
@@ -79,12 +98,25 @@ public class GameController : MonoBehaviour, IStateController
         sessionHighScoreText = sessionHighScoreTextObj.GetComponent<TextMeshProUGUI>();
         pauseButton = pauseButtonObj.GetComponent<Button>();
         meloReloComp = meloReloObj.GetComponent<MeloRelo>();
+        coinImgs = new Image[coinObjs.Length];
+        for (int i = 0; i < coinObjs.Length; i++)
+        {
+            coinImgs[i] = coinObjs[i].GetComponent<Image>();
+        }
+        coinDefaultColor = coinImgs[0].color;
+        coinPowerUpColor = coinPowerUpColorProp;
 
         string sessionHighScoreStr = sessionHighScore.ToString();
         scoreTextDefaultColor = scoreText.color;
         sessionHighScoreTextDefaultColor = sessionHighScoreText.color;
         sessionHighScoreText.text = SESSION_HIGH_SCORE_TEXT + sessionHighScoreStr;
         sessionHighScoreTextBg.text = SESSION_HIGH_SCORE_TEXT + sessionHighScoreStr;
+
+        balloonDebug = balloonDebugProp;
+        if (balloonDebug)
+        {
+            Debug.LogWarning("BALLOON DEBUG IS ON!");
+        }
     }
 
     public void OnStateEnable()
@@ -121,6 +153,8 @@ public class GameController : MonoBehaviour, IStateController
         pauseButtonBgObj.SetActive(false);
         meloReloObj.SetActive(false);
         desertGenerator.OnGenDisable();
+
+        ResetCoins(true);
     }
 
     public void Pause()
@@ -162,6 +196,12 @@ public class GameController : MonoBehaviour, IStateController
         pauseButtonBgObj.SetActive(true);
         pauseButtonObj.SetActive(true);
         pauseButton.interactable = false;
+        ResetCoins(true);
+
+        foreach (GameObject obj in coinObjs)
+        {
+            obj.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -215,6 +255,20 @@ public class GameController : MonoBehaviour, IStateController
                     ResetScoreTextColor();
                 }
             }
+
+            if (meloReloComp.IsInvincible() && powerUpWarning)
+            {
+                invColorChangeTimer += Time.deltaTime;
+                if (invColorChangeTimer > 0.2f)
+                {
+                    foreach (Image i in coinImgs)
+                    {
+                        Color c = i.color.Equals(coinDefaultColor) ? coinPowerUpColor : coinDefaultColor;
+                        i.color = c;
+                    }
+                    invColorChangeTimer = 0f;
+                }
+            }
         }
 
         if (restarting)
@@ -255,6 +309,51 @@ public class GameController : MonoBehaviour, IStateController
         Cloud.MultiplySpeed(factor);
         textSpeedEffect = true;
     }
+
+    public static void AddCoin()
+    {
+        if (!GameStateMachine.IsGameOver() && !meloReloComp.IsInvincible())
+        {
+            coinObjs[currentCoin].SetActive(true);
+            currentCoin++;
+            totalCoinsCollected++;
+            balloonPitch += BALLOON_PITCH_INCREMENT;
+
+            if (currentCoin >= coinObjs.Length)
+            {
+                foreach (Image i in coinImgs)
+                {
+                    i.color = coinPowerUpColor;
+                }
+                invColorChangeTimer = 0f;
+                meloReloComp.PowerUpInvincible();
+            }
+        }
+    }
+
+    public static void ResetCoins(bool gameEnding)
+    {
+        currentCoin = 0;
+        balloonPitch = 1f;
+        invColorChangeTimer = 0f;
+        powerUpWarning = false;
+
+        for (int i = 0; i < coinObjs.Length; i++)
+        {
+            coinObjs[i].SetActive(false);
+            coinImgs[i].color = coinDefaultColor;
+        }
+
+        if (gameEnding)
+        {
+            totalCoinsCollected = 0;
+        }
+    }
+
+    public static void WarnPowerUpExpiring()
+    {
+        powerUpWarning = true;
+    }
     
     public static GameObject GetSand()
     {
@@ -286,6 +385,21 @@ public class GameController : MonoBehaviour, IStateController
     public static bool IsRestarting()
     {
         return restarting;
+    }
+
+    public static bool IsReloInvincible()
+    {
+        return meloReloComp.IsInvincible();
+    }
+
+    public static float GetBalloonPitch()
+    {
+        return balloonPitch;
+    }
+
+    public static bool IsBalloonDebugOn()
+    {
+        return balloonDebug;
     }
 
 }
