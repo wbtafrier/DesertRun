@@ -152,6 +152,7 @@ public class GameController : MonoBehaviour, IStateController
         pauseButtonObj.SetActive(false);
         pauseButtonBgObj.SetActive(false);
         meloReloObj.SetActive(false);
+        meloReloComp.KillInvincibility();
         desertGenerator.OnGenDisable();
 
         ResetCoins(true);
@@ -266,6 +267,7 @@ public class GameController : MonoBehaviour, IStateController
                         Color c = i.color.Equals(coinDefaultColor) ? coinPowerUpColor : coinDefaultColor;
                         i.color = c;
                     }
+                    meloReloComp.FlashColor();
                     invColorChangeTimer = 0f;
                 }
             }

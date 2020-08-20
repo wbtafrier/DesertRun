@@ -9,8 +9,8 @@ public class PauseController : MonoBehaviour, IStateController
     [SerializeField] GameObject pausedTextBgProp = default;
     [SerializeField] GameObject resumeButtonProp = default;
     [SerializeField] GameObject resumeButtonBgProp = default;
-    [SerializeField] GameObject restartButtonProp = default;
-    [SerializeField] GameObject restartButtonBgProp = default;
+    //[SerializeField] GameObject restartButtonProp = default;
+    //[SerializeField] GameObject restartButtonBgProp = default;
     [SerializeField] GameObject exitButtonProp = default;
     [SerializeField] GameObject exitButtonBgProp = default;
 

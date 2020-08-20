@@ -2,27 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MountainRange : GameElement
+public class MountainRange : MonoBehaviour
 {
     readonly Vector3 START_POS = new Vector3(17.47f, -0.25f, -1.5f);
     static readonly float INIT_VELOCITY = -0.1f;
     static float currVelocity = INIT_VELOCITY;
 
     // Start is called before the first frame update
-    public override void Start()
+    public void Start()
     {
-        base.Start();
-    }
-
-    public override void Restart()
-    {
-        currVelocity = INIT_VELOCITY;
     }
 
     // Update is called once per frame
-    public override void Update()
+    public void Update()
     {
-        base.Update();
+        if (GameController.IsRestarting() && currVelocity != INIT_VELOCITY)
+        {
+            currVelocity = INIT_VELOCITY;
+        }
+
         if (GameStateMachine.GetCurrentStateId() == GameStateMachine.GAME.GetId() && !GameController.IsRestarting())
         {
             if (transform.position.x <= -17.5)

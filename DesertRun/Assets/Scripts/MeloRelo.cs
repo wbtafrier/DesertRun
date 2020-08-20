@@ -10,13 +10,15 @@ public class MeloRelo : GameElement
     private AudioSource runningSfxSource;
     private AudioSource powerUpSfxSource;
 
+    [SerializeField] Color powerUpColorProp = default;
+
     private static readonly float ENTER_VELOCITY_X = 1.5f;
     private static readonly float ENTER_FRAME_DURATION = 0.005f;
     private static readonly float JUMP_PRESS_MAX_TIME = 0.3f;
     private static readonly float JUMP_VELOCITY_MIN = 7f;
     private static readonly float GRAVITY_SCALE = 1.75f;
     private static readonly float RUNNING_SFX_BREAK = 0.03f;
-    private static readonly float INVINCIBILITY_MAX = 8f;
+    private static readonly float INVINCIBILITY_MAX = 20f;
 
     private int currSpriteIndex = 0;
     private float spriteChangeTimer = 0f;
@@ -42,6 +44,9 @@ public class MeloRelo : GameElement
 
     static List<Sprite> spriteList = new List<Sprite>();
     static List<PolygonCollider2D> colliderList = new List<PolygonCollider2D>();
+
+    private static Color reloDefaultColor;
+    private static Color reloPowerUpColor;
 
     // Start is called before the first frame update
     public override void Start()
@@ -90,6 +95,8 @@ public class MeloRelo : GameElement
             col.enabled = false;
         }
         enteringFrame = true;
+        reloDefaultColor = spriteRenderer.color;
+        reloPowerUpColor = powerUpColorProp;
     }
 
     public override void Restart()
@@ -112,7 +119,7 @@ public class MeloRelo : GameElement
     public override void Update()
     {
         base.Update();
-        
+
         if (!GameController.IsRestarting())
         {
             if (!dead)
@@ -177,22 +184,67 @@ public class MeloRelo : GameElement
 
                 if (!dead && invincible)
                 {
+                    float warningTime = (INVINCIBILITY_MAX - (INVINCIBILITY_MAX * 0.25f));
                     invincibleTimer += Time.deltaTime;
-                    if (invincibleTimer >= (INVINCIBILITY_MAX - (INVINCIBILITY_MAX * 0.25f)))
+                    if (invincibleTimer >= warningTime && invincibleTimer <= INVINCIBILITY_MAX)
                     {
+                        if (transform.localScale.x > 1f)
+                        {
+                            transform.localScale = new Vector3(1f, 1f, 1f);
+                            jumpSfxSource.pitch = 1f;
+                            runningSfxSource.pitch = 1f;
+                            rigidbodyComp.gravityScale = GRAVITY_SCALE;
+                        }
                         GameController.WarnPowerUpExpiring();
                     }
+                    else if (invincibleTimer < warningTime)
+                    {
+                        if (transform.localScale.x != 1.5f)
+                        {
+                            if (transform.position.y < -0.52f)
+                            {
+                                float x = transform.position.x;
+                                float z = transform.position.z;
+                                transform.position = new Vector3(x, -0.52f, z);
+                            }
+
+                            transform.localScale = new Vector3(1.5f, 1.5f, 1f);
+                            jumpSfxSource.pitch = 0.75f;
+                            runningSfxSource.pitch = 0.75f;
+                            rigidbodyComp.gravityScale = GRAVITY_SCALE * 2f;
+                        }
+                        spriteRenderer.color = reloPowerUpColor;
+                    }
+
                     if (invincibleTimer > INVINCIBILITY_MAX)
                     {
-                        invincible = false;
-                        invincibleTimer = 0f;
-                        GameController.ResetCoins(false);
+                        KillInvincibility();
                     }
                 }
             }
         }
 
         UpdateCollider();
+    }
+
+    public void FlashColor()
+    {
+        spriteRenderer.color = spriteRenderer.color.Equals(reloDefaultColor) ? reloPowerUpColor : reloDefaultColor;
+    }
+
+    public void KillInvincibility()
+    {
+        if (transform.localScale.x > 1f)
+        {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            jumpSfxSource.pitch = 1f;
+            runningSfxSource.pitch = 1f;
+            rigidbodyComp.gravityScale = GRAVITY_SCALE;
+        }
+        spriteRenderer.color = reloDefaultColor;
+        invincible = false;
+        invincibleTimer = 0f;
+        GameController.ResetCoins(false);
     }
 
     void Jump(float axis, float dTime)
@@ -297,7 +349,11 @@ public class MeloRelo : GameElement
             }
             else
             {
-                //have fun with DOs.
+                DesertObject desertObj = collision.gameObject.GetComponent<DesertObject>();
+                if (desertObj)
+                {
+                    desertObj.Fly();
+                }
             }
         }
         else if (collision.transform.tag.Equals("Surface"))

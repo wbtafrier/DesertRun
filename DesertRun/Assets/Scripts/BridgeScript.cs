@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class BridgeScript : MonoBehaviour
 {
-#if UNITY_WEBGL
-    [DllImport("__Internal")] private static extern void OpenGame();
+#if !UNITY_EDITOR && UNITY_WEBGL
+    [DllImport("__Internal")]
+    private static extern void OpenGame();
 #endif
 
     // Start is called before the first frame update
     void Start()
     {
-#if UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL
     OpenGame();
 #endif
     }

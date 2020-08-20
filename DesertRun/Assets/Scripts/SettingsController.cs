@@ -5,41 +5,41 @@ using UnityEngine.UI;
 
 public class SettingsController : MonoBehaviour, IStateController
 {
-    [SerializeField] GameObject settingsTextProp;
-    [SerializeField] GameObject settingsTextBgProp;
-    [SerializeField] GameObject saveButtonProp;
-    [SerializeField] GameObject saveButtonBgProp;
-    [SerializeField] GameObject closeButtonProp;
-    [SerializeField] GameObject closeButtonBgProp;
-    [SerializeField] GameObject volumeTextProp;
-    [SerializeField] GameObject volumeTextBgProp;
-    [SerializeField] GameObject volumeSliderProp;
-    [SerializeField] GameObject musicVolumeTextProp;
-    [SerializeField] GameObject musicVolumeTextBgProp;
-    [SerializeField] GameObject musicVolumeSliderProp;
-    [SerializeField] GameObject soundsVolumeTextProp;
-    [SerializeField] GameObject soundsVolumeTextBgProp;
-    [SerializeField] GameObject soundsVolumeSliderProp;
+    [SerializeField] GameObject settingsTextProp = default;
+    [SerializeField] GameObject settingsTextBgProp = default;
+    [SerializeField] GameObject saveButtonProp = default;
+    [SerializeField] GameObject saveButtonBgProp = default;
+    [SerializeField] GameObject closeButtonProp = default;
+    [SerializeField] GameObject closeButtonBgProp = default;
+    [SerializeField] GameObject volumeTextProp = default;
+    [SerializeField] GameObject volumeTextBgProp = default;
+    [SerializeField] GameObject volumeSliderProp = default;
+    [SerializeField] GameObject musicVolumeTextProp = default;
+    [SerializeField] GameObject musicVolumeTextBgProp = default;
+    [SerializeField] GameObject musicVolumeSliderProp = default;
+    [SerializeField] GameObject soundsVolumeTextProp = default;
+    [SerializeField] GameObject soundsVolumeTextBgProp = default;
+    [SerializeField] GameObject soundsVolumeSliderProp = default;
 
-    static GameObject settingsTextObj;
-    static GameObject settingsTextBgObj;
-    static GameObject saveButtonObj;
-    static GameObject saveButtonBgObj;
-    static GameObject closeButtonObj;
-    static GameObject closeButtonBgObj;
-    static GameObject volumeTextObj;
-    static GameObject volumeTextBgObj;
-    static GameObject volumeSliderObj;
-    static GameObject musicVolumeTextObj;
-    static GameObject musicVolumeTextBgObj;
-    static GameObject musicVolumeSliderObj;
-    static GameObject soundsVolumeTextObj;
-    static GameObject soundsVolumeTextBgObj;
-    static GameObject soundsVolumeSliderObj;
+    GameObject settingsTextObj;
+    GameObject settingsTextBgObj;
+    GameObject saveButtonObj;
+    GameObject saveButtonBgObj;
+    GameObject closeButtonObj;
+    GameObject closeButtonBgObj;
+    GameObject volumeTextObj;
+    GameObject volumeTextBgObj;
+    GameObject volumeSliderObj;
+    GameObject musicVolumeTextObj;
+    GameObject musicVolumeTextBgObj;
+    GameObject musicVolumeSliderObj;
+    GameObject soundsVolumeTextObj;
+    GameObject soundsVolumeTextBgObj;
+    GameObject soundsVolumeSliderObj;
 
     static Slider volumeSlider;
-    static Slider musicVolumeSlider;
-    static Slider soundsVolumeSlider;
+    Slider musicVolumeSlider;
+    Slider soundsVolumeSlider;
 
     // Start is called before the first frame update
     void Start()

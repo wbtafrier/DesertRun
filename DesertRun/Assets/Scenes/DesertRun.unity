@@ -4285,6 +4285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85f07e0d9d440be4282c39854df7145c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerUpColorProp: {r: 0.52156866, g: 0, b: 1, a: 1}
 --- !u!60 &755386860
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -8270,7 +8271,7 @@ MonoBehaviour:
   - {fileID: 338532665}
   - {fileID: 792880565}
   coinPowerUpColorProp: {r: 0.972549, g: 0, b: 0.972549, a: 1}
-  balloonDebugProp: 1
+  balloonDebugProp: 0
 --- !u!1 &1270666383
 GameObject:
   m_ObjectHideFlags: 0

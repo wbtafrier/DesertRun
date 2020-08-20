@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class DesertGenerator : MonoBehaviour
 {
-    [SerializeField] List<GameObject> cactiList;
-    [SerializeField] List<GameObject> rockList;
-    [SerializeField] List<GameObject> snakeList;
-    [SerializeField] List<GameObject> tallCactiList;
-    [SerializeField] List<GameObject> balloonList;
+    [SerializeField] List<GameObject> cactiList = default;
+    [SerializeField] List<GameObject> rockList = default;
+    [SerializeField] List<GameObject> snakeList = default;
+    [SerializeField] List<GameObject> tallCactiList = default;
+    [SerializeField] List<GameObject> balloonList = default;
     [SerializeField] bool debugOn = false;
 
     public static readonly float SPAWN_X = 11.41f;
@@ -31,7 +31,7 @@ public class DesertGenerator : MonoBehaviour
     private static readonly float INIT_DESERT_TIMER_CURR_MAX = 2f;
     private static readonly float INIT_DESERT_TIMER_CURR_DURATION = 2f;
     private static readonly float INIT_DESERT_OBJECT_SPEED = -5f;
-    private static readonly float BALLOON_TIMER_MIN = 3f;
+    private static readonly float BALLOON_TIMER_MIN = 1f;
 
     private static readonly float[] SCORE_CHECKPOINTS = new float[] {
         1000f, 3000f, 5000f
@@ -141,28 +141,32 @@ public class DesertGenerator : MonoBehaviour
         spawnBreak = false;
         foreach (GameObject obj in cactiList)
         {
-            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+            DesertObject desertObj = obj.GetComponent<DesertObject>();
+            desertObj.Restart();
         }
 
         foreach (GameObject obj in rockList)
         {
-            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+            DesertObject desertObj = obj.GetComponent<DesertObject>();
+            desertObj.Restart();
         }
 
         foreach (GameObject obj in snakeList)
         {
-            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+            DesertObject desertObj = obj.GetComponent<DesertObject>();
+            desertObj.Restart();
         }
 
         foreach (GameObject obj in tallCactiList)
         {
-            obj.GetComponent<DesertObject>().ReturnToInitialPosition();
+            DesertObject desertObj = obj.GetComponent<DesertObject>();
+            desertObj.Restart();
         }
 
         foreach (GameObject obj in balloonList)
         {
             Balloon b = obj.GetComponent<Balloon>();
-            b.ReturnToInitialPosition();
+            b.Restart();
             b.ResetSparkles();
         }
         cactiStack.Clear();
@@ -244,8 +248,7 @@ public class DesertGenerator : MonoBehaviour
                 int r = 0;
                 if (!GameController.IsBalloonDebugOn())
                 {
-                    r = Random.Range(0, 3);
-                    
+                    r = Random.Range(0, 4);
                 }
 
                 if (r == 0)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Balloon : DesertObject
 {
-    [SerializeField] GameObject sparkleProp;
+    [SerializeField] GameObject sparkleProp = default;
 
     private static readonly float BALLOON_Y_SPEED = 0.4f;
     private bool down = false;
@@ -16,6 +16,7 @@ public class Balloon : DesertObject
 
     public override void Restart()
     {
+        base.Restart();
         SetDingVolume(GameStateMachine.GetSoundVolume());
         down = false;
         targetPosY = upPosY;
