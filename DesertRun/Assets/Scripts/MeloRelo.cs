@@ -87,7 +87,7 @@ public class MeloRelo : GameElement
 
         if (colliderList.Count == 0)
         {
-            colliderList = new List<PolygonCollider2D>(GetComponents<PolygonCollider2D>());
+            colliderList = new List<PolygonCollider2D>(GetComponentsInChildren<PolygonCollider2D>());
         }
 
         foreach (PolygonCollider2D col in colliderList)

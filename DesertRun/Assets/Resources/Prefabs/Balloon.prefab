@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8c7c32be1e504e4aba590fdeb052c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  particleKick: {fileID: 0}
   sparkleProp: {fileID: 0}
 --- !u!60 &4999009155344552765
 PolygonCollider2D:
@@ -137,7 +138,9 @@ PolygonCollider2D:
       - {x: -0.14524919, y: 0.110717}
       - {x: -0.0744198, y: 0.08335775}
       - {x: -0.017707884, y: 0.04085493}
-      - {x: 0.024689198, y: 0.03952533}
+      - {x: -0.018413067, y: -0.59066296}
+      - {x: 0.01564169, y: -0.594085}
+      - {x: 0.017437935, y: 0.04314947}
       - {x: 0.0539428, y: 0.07139832}
       - {x: 0.17472112, y: 0.11827654}
       - {x: 0.2068724, y: 0.1581276}

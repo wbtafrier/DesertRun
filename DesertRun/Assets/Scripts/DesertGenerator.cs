@@ -248,7 +248,7 @@ public class DesertGenerator : MonoBehaviour
                 int r = 0;
                 if (!GameController.IsBalloonDebugOn())
                 {
-                    r = Random.Range(0, 4);
+                    r = Random.Range(0, 6);
                 }
 
                 if (r == 0)
