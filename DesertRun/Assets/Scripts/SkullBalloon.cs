@@ -12,13 +12,13 @@ public class SkullBalloon : DesertObject
     //private GameObject sparkleObj;
 
     //private ParticleSystem sparkles;
-    //private AudioSource dingSfx;
+    private AudioSource explodeSfx;
     private SpriteRenderer spriteRenderer;
 
     public override void Restart()
     {
         base.Restart();
-        //SetDingVolume(GameStateMachine.GetSoundVolume());
+        SetExplodeVolume(GameStateMachine.GetSoundVolume());
         down = false;
         targetPosY = upPosY;
         spriteRenderer.enabled = true;
@@ -42,8 +42,8 @@ public class SkullBalloon : DesertObject
         //sparkleObj = sparkleProp;
         //sparkles = sparkleObj.GetComponent<ParticleSystem>();
 
-        //dingSfx = GetComponent<AudioSource>();
-        //SetDingVolume(GameStateMachine.GetSoundVolume());
+        explodeSfx = GetComponent<AudioSource>();
+        SetExplodeVolume(GameStateMachine.GetSoundVolume());
     }
 
     // Update is called once per frame
@@ -93,12 +93,11 @@ public class SkullBalloon : DesertObject
         //    sparkleObj.transform.position = new Vector3(x, y, z);
         //}
     }
-    
-    //private void SetDingVolume(float vol)
-    //{
-    //    dingSfx.volume = vol;
-    //    dingSfx.pitch = 1f;
-    //}
+
+    private void SetExplodeVolume(float vol)
+    {
+        explodeSfx.volume = vol;
+    }
 
     //public void ResetSparkles()
     //{
@@ -111,12 +110,7 @@ public class SkullBalloon : DesertObject
         Transform t = collision.transform;
         if (t.CompareTag("Player"))
         {
-            //if (!GameController.IsReloInvincible())
-            //{
-            //    dingSfx.Play();
-            //    GameController.AddCoin();
-            //}
-            //sparkles.Stop();
+            explodeSfx.Play();
             spriteRenderer.enabled = false;
             transform.GetChild(0).GetComponent<ParticleSystem>().Play();
             if (!GameController.IsReloInvincible())
