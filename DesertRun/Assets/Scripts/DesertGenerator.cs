@@ -9,6 +9,7 @@ public class DesertGenerator : MonoBehaviour
     [SerializeField] List<GameObject> snakeList = default;
     [SerializeField] List<GameObject> tallCactiList = default;
     [SerializeField] List<GameObject> balloonList = default;
+    [SerializeField] List<GameObject> skullBalloonList = default;
     [SerializeField] bool debugOn = false;
 
     public static readonly float SPAWN_X = 11.41f;
@@ -23,6 +24,7 @@ public class DesertGenerator : MonoBehaviour
     private static Stack<DesertObject> snakeStack = new Stack<DesertObject>();
     private static Stack<DesertObject> tallCactiStack = new Stack<DesertObject>();
     private static Stack<DesertObject> balloonStack = new Stack<DesertObject>();
+    private static Stack<DesertObject> skullBalloonStack = new Stack<DesertObject>();
 
     private float desertTimer = 0f;
     private float balloonTimer = 0f;
@@ -83,6 +85,11 @@ public class DesertGenerator : MonoBehaviour
         {
             balloonStack.Push(obj.GetComponent<DesertObject>());
         }
+
+        foreach (GameObject obj in skullBalloonList)
+        {
+            skullBalloonStack.Push(obj.GetComponent<DesertObject>());
+        }
     }
 
     public void Restart()
@@ -132,6 +139,11 @@ public class DesertGenerator : MonoBehaviour
         {
             obj.SetActive(true);
         }
+
+        foreach (GameObject obj in skullBalloonList)
+        {
+            obj.SetActive(true);
+        }
     }
 
     public void OnGenDisable()
@@ -169,11 +181,19 @@ public class DesertGenerator : MonoBehaviour
             b.Restart();
             b.ResetSparkles();
         }
+
+        foreach (GameObject obj in skullBalloonList)
+        {
+            SkullBalloon b = obj.GetComponent<SkullBalloon>();
+            b.Restart();
+            //b.ResetSparkles();
+        }
         cactiStack.Clear();
         rockStack.Clear();
         snakeStack.Clear();
         tallCactiStack.Clear();
         balloonStack.Clear();
+        skullBalloonStack.Clear();
 
         foreach (GameObject obj in cactiList)
         {
@@ -196,6 +216,11 @@ public class DesertGenerator : MonoBehaviour
         }
 
         foreach (GameObject obj in balloonList)
+        {
+            obj.SetActive(false);
+        }
+
+        foreach (GameObject obj in skullBalloonList)
         {
             obj.SetActive(false);
         }
@@ -234,6 +259,11 @@ public class DesertGenerator : MonoBehaviour
                 else if (obj.gameObject.tag.Equals("TallCactus"))
                 {
                     y = SPAWN_Y_TALL_CACTUS;
+                }
+                else if (obj.gameObject.tag.Equals("SkullBalloon"))
+                {
+                    balloonTimer = 0f;
+                    y = SPAWN_Y_BALLOON;
                 }
 
                 obj.gameObject.transform.position = new Vector3(SPAWN_X, y, obj.gameObject.transform.position.z);
@@ -327,9 +357,13 @@ public class DesertGenerator : MonoBehaviour
         {
             obj = rockStack.Pop();
         }
-        else if (r < 100 && snakeStack.Count > 0)
+        else if (r < 95 && snakeStack.Count > 0)
         {
             obj = snakeStack.Pop();
+        }
+        else if (r < 100 && skullBalloonStack.Count > 0)
+        {
+            obj = skullBalloonStack.Pop();
         }
 
         if (obj != null)
@@ -373,6 +407,10 @@ public class DesertGenerator : MonoBehaviour
         else if (tag.Equals("Balloon") && !balloonStack.Contains(obj))
         {
             balloonStack.Push(obj);
+        }
+        else if (tag.Equals("SkullBalloon") && !skullBalloonStack.Contains(obj))
+        {
+            skullBalloonStack.Push(obj);
         }
     }
 }
